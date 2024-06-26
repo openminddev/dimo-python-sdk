@@ -1,13 +1,29 @@
 import requests
 from request import Request
 from endpoint import Endpoint
-from environments import dimo_production, dimo_dev
+from environments import dimo_environment
 
 class DIMO:
-    _session = requests.Session()
 
-    def __init__(self, env):
+    def __init__(self, env="Production"):
         self.env = env
+        self.urls = dimo_environment[self.env]
+        self._session = Request.session
+
+    def _get_full_path(self, service, path):
+        base_path = self.urls[service] # Set a base_path for the DIMO service you're using
+        return f"{base_path}{path}" # Return the full path of the endpoint you'll make a request to.
+
+    # TODO: Cleanup **kwargs as needed
+    def request(self, http_method, service, path, **kwargs):
+        full_path = self._get_full_path(service, path) # Get full path to make request
+        return Request(http_method, full_path, self._session)(**kwargs)
+
+    def get_device_makes(self, **kwargs):
+        return self.request('GET', 'DeviceDefinitions', '/device-makes', **kwargs)
+
+    def get_devices(self, **kwargs):
+        return self.request('GET', 'Devices', '/v1/devices', **kwargs )
 
 
     ### AUTH - Subject to Change based on web3 library ###
@@ -16,11 +32,12 @@ class DIMO:
     # submit_challenge - /auth/web3/submit_challenge [POST]
     # get_token - getToken [FUNCTION]
 
-    # vehicleV1 = Endpoint('/v1/vehicle')
-    # vehicleV1.history = Request('GET',)
-    # vehicleV2 = Endpoint
+
     ### DEVICE DATA ###
+   # vehicle = Endpoint('https://device-data-api.dimo.zone/v2/vehicle/', 'GET', _session)
+   # vehicleHistory = Request('GET', 'https://device-data-api.dimo.zone/v2/vehicle/:tokenId/history', _session)
     # get_vehicle_history - /v2/vehicle/:tokenId/history [GET]
+
     # get_vehicle_status - /v2/vehicle/:tokenId/status [GET]
     # get_v1_vehicle_history - /v1/vehicle/:tokenId/history [GET]
     # get_v1_vehicle_status - /v1/vehicle/:tokenId/status [GET]
@@ -35,7 +52,6 @@ class DIMO:
     # get_by_mmy - /device-definitions [GET]
     # get_by_id - /device-definitions/:id [GET]
     # list_device_makes - /device-makes [GET]
-    deviceMakes = Request('GET', 'device-definitions-api.dimo.zone/device-makes', _session)
     # get_device_type_by_id - /device-types/:id [GET]
 
     ### DEVICES ###
@@ -97,6 +113,6 @@ class DIMO:
     # get_pending_jobs_by_address - /v1/device-config/eth-addr/:address/jobs/pending
     # set_job_status_by_address - /v1/device-config/eth-addr/:address/jobs/:jobId/:status
 
-dimo = DIMO(dimo_production)
-response = dimo.deviceMakes()
+dimo = DIMO("Production")
+response = dimo.get_device_makes()
 print(response)
