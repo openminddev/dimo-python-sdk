@@ -19,42 +19,59 @@ class DIMO:
         full_path = self._get_full_path(service, path) # Get full path to make request
         return Request(http_method, full_path, self._session)(**kwargs)
 
-    def get_device_makes(self, **kwargs):
-        return self.request('GET', 'DeviceDefinitions', '/device-makes', **kwargs)
-
     def get_devices(self, **kwargs):
         return self.request('GET', 'Devices', '/v1/devices', **kwargs )
 
 
-    ### AUTH - Subject to Change based on web3 library ###
+    ######################## AUTH - Subject to Change based on web3 library ########################
     # generate_challenge - /auth/web3/generate_challenge
     # sign_challenge - signChallenge [FUNCTION]
     # submit_challenge - /auth/web3/submit_challenge [POST]
     # get_token - getToken [FUNCTION]
 
 
-    ### DEVICE DATA ###
-   # vehicle = Endpoint('https://device-data-api.dimo.zone/v2/vehicle/', 'GET', _session)
-   # vehicleHistory = Request('GET', 'https://device-data-api.dimo.zone/v2/vehicle/:tokenId/history', _session)
-    # get_vehicle_history - /v2/vehicle/:tokenId/history [GET]
+    ######################## DEVICE DATA ########################
+    def get_vehicle_history(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v2/vehicle/:tokenId/history')
 
-    # get_vehicle_status - /v2/vehicle/:tokenId/status [GET]
-    # get_v1_vehicle_history - /v1/vehicle/:tokenId/history [GET]
-    # get_v1_vehicle_status - /v1/vehicle/:tokenId/status [GET]
-    # get_v1_vehicle_status_raw - /v1/vehicle/:tokenId/status-raw [GET]
-    # get_user_device_status - /v1/user/device-data/:userDeviceId/status [GET]
-    # get_user_device_history - /v1/user/device-data/:userDeviceId/historical [GET]
-    # get_daily_distance - /v1/user/device-data/:userDeviceId/daily-distance [GET]
-    # get_total_distance - /v1/user/device-data/:userDeviceId/distance-driven [GET]
-    # send_json_export_email - /v1/user/device-data/:userDeviceId/export/json/email [POST]
+    def get_vehicle_status(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v2/vehicle/:tokenId/status')
 
-    ### DEVICE DEFINITIONS ###
+    def get_v1_vehicle_history(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/history')
+
+    def get_v1_vehicle_status(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/status')
+
+    def get_v1_vehicle_status_raw(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/status-raw')
+
+    def get_user_device_status(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/status')
+
+    def get_user_device_history(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/historical')
+
+    def get_daily_distance(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/daily-distance')
+
+    def get_total_distance(self, **kwargs):
+        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/distance-driven')
+
+    def send_json_export_email(self, **kwargs):
+        return self.request('POST', 'DeviceData', '/v1/user/device-data/:userDeviceId/export/json/email')
+
+    ######################## DEVICE DEFINITIONS ########################
     # get_by_mmy - /device-definitions [GET]
+    def get_by_mmy(self, **kwargs):
+        return self.request('GET', 'DeviceDefinitions', '/device-definitions')
     # get_by_id - /device-definitions/:id [GET]
     # list_device_makes - /device-makes [GET]
+    def list_device_makes(self):
+        return self.request('GET', 'DeviceDefinitions', '/device-makes')
     # get_device_type_by_id - /device-types/:id [GET]
 
-    ### DEVICES ###
+    ######################## DEVICES ########################
     # create_vehicle - /v1/user/devices [POST]
     # create_vehicle_from_smartcar - /v1/user/devices/fromsmartcar [POST]
     # create_vehicle_from_vin - /v1/user/devices/fromvin [POST]
@@ -80,28 +97,28 @@ class DIMO:
     # get_aftermarket_device_image - /v1/aftermarket/device/:tokenId/image [GET]
     # get_aftermarket_device_metadata_by_address - /v1/aftermarket/device/by-address/:address [GET]
 
-    ### EVENTS ###
+    ######################## EVENTS ########################
     # get_events - /v1/events [GET]
 
-    ### TOKEN EXCHANGE ###
+    ######################## TOKEN EXCHANGE ########################
     # exchange - /v1/tokens/exchange [POST]
 
-    ### TRIPS ###
+    ######################## TRIPS ########################
     # trips - /v1/vehicle/:tokenId/trips [GET]
 
-    ### USER ###
+    ######################## USER ########################
     # get_user - /v1/user [GET]
     # update_user - /v1/user [PUT]
     # delete_user - /v1/user [DELETE]
     # send_confirmation_email - /v1/user/send-confirmation-email [POST]
     # confirm_email - v1/user/confirm-email [POST]
 
-    ### VALUATIONS ###
+    ######################## VALUATIONS ########################
     # get_valuations - /v1/user/devices/:userDeviceId/valuations [GET]
     # get_instant_offer - /v1/user/devices/:userDeviceId/instant-offer [GET]
     # get_offers - /v1/user/devices/:userDeviceId/offers
 
-    ### VEHICLE SIGNAL DECORDER ###
+    ######################## VEHICLE SIGNAL DECORDER ########################
     # list_config_urls_by_vin - /v1/device-config/vin/:vin/urls [GET]
     # list_config_urls_by_address - /v1/device-config/eth-addr/:address/urls [GET]
     # get_pid_configs - /v1/device-config/pids/:templateName [GET]
@@ -114,5 +131,4 @@ class DIMO:
     # set_job_status_by_address - /v1/device-config/eth-addr/:address/jobs/:jobId/:status
 
 dimo = DIMO("Production")
-response = dimo.get_device_makes()
-print(response)
+print(dimo.get_by_mmy(make="Lexus", model="NX", year="2021"))

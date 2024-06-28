@@ -28,9 +28,3 @@ dimo_environment = {
         'VehicleSignalDecoding': 'https://vehicle-signal-decoding.dev.dimo.zone'
     }
 }
-
-dimo_production = dimo_environment["Production"]
-dimo_dev = dimo_environment["Dev"]
-
-
-print(dimo_production["Auth"])
