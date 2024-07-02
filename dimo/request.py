@@ -19,7 +19,7 @@ class Request:
         query_params = queryParams
 
         selected_path = self._path_selector(self.path, obj_id)
-        url = selected_path #The full URL is passed from the DIMO class.
+        url = selected_path # The full URL is passed from the DIMO class.
 
         response = self.session.request (
             method=self.http_method,

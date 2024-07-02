@@ -16,7 +16,7 @@ class Endpoint:
         if 'GET' in basic_methods:
             self.get = Request('GET', uri, self.session)
         if 'POST' in basic_methods:
-            self.create = Request('POST', uri, self.session)
+            self.post = Request('POST', uri, self.session)
 
         # uri = f'{uri}/:{self.name[:-1]}Id'  # e.g. '/admins' --> '/admins/:adminId'
 

@@ -2,17 +2,26 @@ import requests
 from request import Request
 from endpoint import Endpoint
 from environments import dimo_environment
+import asyncio
+import re
 
 class DIMO:
 
     def __init__(self, env="Production"):
         self.env = env
-        self.urls = dimo_environment[self.env]
+        self.urls = dimo_environment[env]
         self._session = Request.session
 
-    def _get_full_path(self, service, path):
+    def _get_full_path(self, service, path, params=None):
         base_path = self.urls[service] # Set a base_path for the DIMO service you're using
-        return f"{base_path}{path}" # Return the full path of the endpoint you'll make a request to.
+        full_path = f"{base_path}{path}"
+
+        if params:
+            for key, value in params.items():
+                pattern = f":{key}"
+                full_path = re.sub(pattern, str(value), full_path)
+        return full_path # Return the full path of the endpoint you'll make a request to.
+
 
     # TODO: Cleanup **kwargs as needed
     def request(self, http_method, service, path, **kwargs):
@@ -23,53 +32,83 @@ class DIMO:
         return self.request('GET', 'Devices', '/v1/devices', **kwargs )
 
 
-    ######################## AUTH - Subject to Change based on web3 library ########################
-    # generate_challenge - /auth/web3/generate_challenge
-    # sign_challenge - signChallenge [FUNCTION]
-    # submit_challenge - /auth/web3/submit_challenge [POST]
-    # get_token - getToken [FUNCTION]
+    ######################## AUTH ########################
 
+    async def generate_challenge(self, client_id, domain, scope, response_type, address):
+        return self.request('POST', 'Auth', '/auth/web3/generate_challenge')
+
+    async def sign_challenge(self, message, private_key):
+        return self.request('FUNCTION', 'Auth', '/signChallenge')
+        pass
+
+    async def submit_challenge(self, client_id, domain, state, signature):
+        return self.request('POST', 'Auth', '/auth/web3/submit_challenge')
+
+    async def get_token(self, object, env="Production"):
+        sdk = DIMO(env)
+
+        challenge = await sdk.generate_challenge(
+            client_id = 'client_id',
+            domain = 'domain',
+            scope = 'scope',
+            response_type = 'response_type',
+            address = 'client_id'
+        )
+
+        sign = await sdk.sign_challenge(
+            message = challenge.challenge,
+            private_key= object['private_key']
+        )
+
+        submit = await sdk.submit_challenge(
+            client_id = object['client_id'],
+            domain = object['domain'],
+            state = challenge.state,
+            signature = sign
+        )
+
+        return submit
 
     ######################## DEVICE DATA ########################
-    def get_vehicle_history(self, **kwargs):
+    def get_vehicle_history(self, token_id, **kwargs):
         return self.request('GET', 'DeviceData', '/v2/vehicle/:tokenId/history')
 
-    def get_vehicle_status(self, **kwargs):
+    def get_vehicle_status(self, token_id, **kwargs):
         return self.request('GET', 'DeviceData', '/v2/vehicle/:tokenId/status')
 
-    def get_v1_vehicle_history(self, **kwargs):
+    def get_v1_vehicle_history(self, token_id, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/history')
 
-    def get_v1_vehicle_status(self, **kwargs):
+    def get_v1_vehicle_status(self, token_id, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/status')
 
-    def get_v1_vehicle_status_raw(self, **kwargs):
+    def get_v1_vehicle_status_raw(self, token_id, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/status-raw')
 
-    def get_user_device_status(self, **kwargs):
+    def get_user_device_status(self, userDeviceId, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/status')
 
-    def get_user_device_history(self, **kwargs):
+    def get_user_device_history(self, userDeviceId, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/historical')
 
-    def get_daily_distance(self, **kwargs):
+    def get_daily_distance(self, userDeviceId, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/daily-distance')
 
-    def get_total_distance(self, **kwargs):
+    def get_total_distance(self, userDeviceId, **kwargs):
         return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/distance-driven')
 
-    def send_json_export_email(self, **kwargs):
+    def send_json_export_email(self, userDeviceId, **kwargs):
         return self.request('POST', 'DeviceData', '/v1/user/device-data/:userDeviceId/export/json/email')
 
     ######################## DEVICE DEFINITIONS ########################
-    # get_by_mmy - /device-definitions [GET]
     def get_by_mmy(self, **kwargs):
         return self.request('GET', 'DeviceDefinitions', '/device-definitions')
-    # get_by_id - /device-definitions/:id [GET]
-    # list_device_makes - /device-makes [GET]
+    def get_by_id(self, id):
+        return self.request('GET', 'DeviceDefinitions', '/device-definitions/:id')
     def list_device_makes(self):
         return self.request('GET', 'DeviceDefinitions', '/device-makes')
-    # get_device_type_by_id - /device-types/:id [GET]
+    def get_device_type_by_id(self, id):
+        return self.request('GET', 'DeviceDefinitions', '/device-types/:id')
 
     ######################## DEVICES ########################
     # create_vehicle - /v1/user/devices [POST]
@@ -129,6 +168,3 @@ class DIMO:
     # get_jobs_by_address - /v1/device-config/eth-addr/:address/jobs [GET]
     # get_pending_jobs_by_address - /v1/device-config/eth-addr/:address/jobs/pending
     # set_job_status_by_address - /v1/device-config/eth-addr/:address/jobs/:jobId/:status
-
-dimo = DIMO("Production")
-print(dimo.get_by_mmy(make="Lexus", model="NX", year="2021"))
