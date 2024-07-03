@@ -6,6 +6,7 @@ from constants import dimo_constants
 import asyncio
 import re
 import urllib.parse
+from eth_account.messages import encode_defunct
 from web3 import Web3
 
 
@@ -54,48 +55,48 @@ class DIMO:
         }
         return self.request('POST', 'Auth', '/auth/web3/generate_challenge', data=data, headers=headers)
 
-    async def sign_challenge(self, message, private_key, env="Production"):
-        web3 = Web3(Web3.HTTPProvider(dimo_constants[env]['RPC_provder']))
-        message = challenge['challenge']
-        private_key = private_key
-        signed_message = web3.eth.account.sign_message(message, private_key=private_key)
 
+    async def sign_challenge(self, message, private_key, env="Production"):
+        web3 = Web3(Web3.HTTPProvider(dimo_constants[env]['RPC_provider']))
+        signed_message = web3.eth.account.sign_message(encode_defunct(text=message), private_key=private_key)
         return signed_message.signature.hex()
+
 
     async def submit_challenge(self, form_data, headers):
         return self.request('POST', 'Auth', '/auth/web3/submit_challenge', data=form_data, headers=headers)
 
 
 
-    async def get_token(self, client_id, domain, scope, response_type, address, headers, private_key, env="Production"):
+    async def get_token(self, client_id, domain, scope, response_type, address, private_key, grant_type="authorization_code", env="Production"):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
-
         challenge = await self.generate_challenge(
             headers=headers,
-            client_id = client_id,
-            domain = domain,
-            scope = scope,
-            response_type = response_type,
-            address = client_id
+            client_id=client_id,
+            domain=domain,
+            scope=scope,
+            response_type=response_type,
+            address=address
         )
+        print("Challenge response:", challenge)
 
         sign = await self.sign_challenge(
-                message=challenge['challenge'],
-                private_key=private_key,
-                env=env
+            message=challenge['challenge'],
+            private_key=private_key,
+            env=env
         )
 
-        form_data = urllib.parse.urlencode({
-            'client_id':'client_id',
-            'domain':'domain',
-            'state':challenge.state,
-            'signature':sign
-        })
+        form_data = {
+            'client_id': client_id,
+            'domain': domain,
+            'state': challenge['state'],
+            'signature': sign,
+            'grant_type': grant_type
+        }
 
+        print("Form data:", form_data)
         submit = await self.submit_challenge(form_data, headers)
-
         return submit
     ######################## DEVICE DATA ########################
     def get_vehicle_history(self, token_id, **kwargs):
