@@ -2,8 +2,12 @@ import requests
 from request import Request
 from endpoint import Endpoint
 from environments import dimo_environment
+from constants import dimo_constants
 import asyncio
 import re
+import urllib.parse
+from web3 import Web3
+
 
 class DIMO:
 
@@ -34,41 +38,64 @@ class DIMO:
 
     ######################## AUTH ########################
 
-    async def generate_challenge(self, client_id, domain, scope, response_type, address):
-        return self.request('POST', 'Auth', '/auth/web3/generate_challenge')
+    async def generate_challenge(self,
+        client_id,
+        domain,
+        scope,
+        response_type,
+        address,
+        headers):
+        data = {
+            'client_id': client_id,
+            'domain': domain,
+            'scope': scope,
+            'response_type': response_type,
+            'address': address
+        }
+        return self.request('POST', 'Auth', '/auth/web3/generate_challenge', data=data, headers=headers)
 
-    async def sign_challenge(self, message, private_key):
-        return self.request('FUNCTION', 'Auth', '/signChallenge')
-        pass
+    async def sign_challenge(self, message, private_key, env="Production"):
+        web3 = Web3(Web3.HTTPProvider(dimo_constants[env]['RPC_provder']))
+        message = challenge['challenge']
+        private_key = private_key
+        signed_message = web3.eth.account.sign_message(message, private_key=private_key)
 
-    async def submit_challenge(self, client_id, domain, state, signature):
-        return self.request('POST', 'Auth', '/auth/web3/submit_challenge')
+        return signed_message.signature.hex()
 
-    async def get_token(self, object, env="Production"):
-        sdk = DIMO(env)
+    async def submit_challenge(self, form_data, headers):
+        return self.request('POST', 'Auth', '/auth/web3/submit_challenge', data=form_data, headers=headers)
 
-        challenge = await sdk.generate_challenge(
-            client_id = 'client_id',
-            domain = 'domain',
-            scope = 'scope',
-            response_type = 'response_type',
-            address = 'client_id'
+
+
+    async def get_token(self, client_id, domain, scope, response_type, address, headers, private_key, env="Production"):
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+
+        challenge = await self.generate_challenge(
+            headers=headers,
+            client_id = client_id,
+            domain = domain,
+            scope = scope,
+            response_type = response_type,
+            address = client_id
         )
 
-        sign = await sdk.sign_challenge(
-            message = challenge.challenge,
-            private_key= object['private_key']
+        sign = await self.sign_challenge(
+            message = challenge['challenge'],
+            private_key= 'private_key'
         )
 
-        submit = await sdk.submit_challenge(
-            client_id = object['client_id'],
-            domain = object['domain'],
-            state = challenge.state,
-            signature = sign
-        )
+        form_data = urllib.parse.urlencode({
+            'client_id':'client_id',
+            'domain':'domain',
+            'state':challenge.state,
+            'signature':sign
+        })
+
+        submit = await self.submit_challenge(form_data, headers)
 
         return submit
-
     ######################## DEVICE DATA ########################
     def get_vehicle_history(self, token_id, **kwargs):
         return self.request('GET', 'DeviceData', '/v2/vehicle/:tokenId/history')

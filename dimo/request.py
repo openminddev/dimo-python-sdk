@@ -1,6 +1,7 @@
 import json
 import requests
 import re
+import urllib.parse
 
 class Request:
 
@@ -11,7 +12,7 @@ class Request:
         self.path = path
         self.session = session
         self.default_headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
         }
 
     def __call__(self, id=None, queryParams=None, **kwargs):
@@ -21,12 +22,19 @@ class Request:
         selected_path = self._path_selector(self.path, obj_id)
         url = selected_path # The full URL is passed from the DIMO class.
 
+        headers = {**self.default_headers, **kwargs.get('headers', {})}
+
+        if 'data' in kwargs and headers.get('Content-Type') == 'application/x-www-form-urlencoded':
+            data = urllib.parse.urlencode(kwargs['data'])
+        else:
+            data = json.dumps(kwargs.get('data')) if kwargs.get('data') else None
+
         response = self.session.request (
             method=self.http_method,
             url=url,
-            headers=self.default_headers,
+            headers=headers,
             params=kwargs.get('params'),
-            data=json.dumps(kwargs.get('data') if kwargs.get('data') else None)
+            data=data
         )
 
         response.raise_for_status() # Raises an HTTPError for bad responses, TEMPORARY*
