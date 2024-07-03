@@ -82,8 +82,9 @@ class DIMO:
         )
 
         sign = await self.sign_challenge(
-            message = challenge['challenge'],
-            private_key= 'private_key'
+                message=challenge['challenge'],
+                private_key=private_key,
+                env=env
         )
 
         form_data = urllib.parse.urlencode({
