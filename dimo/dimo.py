@@ -55,17 +55,13 @@ class DIMO:
         }
         return self.request('POST', 'Auth', '/auth/web3/generate_challenge', data=data, headers=headers)
 
-
     async def sign_challenge(self, message, private_key, env="Production"):
         web3 = Web3(Web3.HTTPProvider(dimo_constants[env]['RPC_provider']))
         signed_message = web3.eth.account.sign_message(encode_defunct(text=message), private_key=private_key)
         return signed_message.signature.hex()
 
-
     async def submit_challenge(self, form_data, headers):
         return self.request('POST', 'Auth', '/auth/web3/submit_challenge', data=form_data, headers=headers)
-
-
 
     async def get_token(self, client_id, domain, scope, response_type, address, private_key, grant_type="authorization_code", env="Production"):
         headers = {
@@ -79,7 +75,6 @@ class DIMO:
             response_type=response_type,
             address=address
         )
-        print("Challenge response:", challenge)
 
         sign = await self.sign_challenge(
             message=challenge['challenge'],
@@ -94,8 +89,6 @@ class DIMO:
             'signature': sign,
             'grant_type': grant_type
         }
-
-        print("Form data:", form_data)
         submit = await self.submit_challenge(form_data, headers)
         return submit
     ######################## DEVICE DATA ########################
@@ -130,8 +123,8 @@ class DIMO:
         return self.request('POST', 'DeviceData', '/v1/user/device-data/:userDeviceId/export/json/email')
 
     ######################## DEVICE DEFINITIONS ########################
-    def get_by_mmy(self, **kwargs):
-        return self.request('GET', 'DeviceDefinitions', '/device-definitions')
+    async def get_by_mmy(self, make, model, year):
+        return self.request('GET', 'DeviceDefinitions', '/device-definitions', make=make, model=model, year=year)
     def get_by_id(self, id):
         return self.request('GET', 'DeviceDefinitions', '/device-definitions/:id')
     def list_device_makes(self):
@@ -170,12 +163,29 @@ class DIMO:
 
     ######################## TOKEN EXCHANGE ########################
     # exchange - /v1/tokens/exchange [POST]
+    def token_exchange(self, authObj, env="Production"):
+        exchange = {
+            'body': {
+                'nftContractAddress':  dimo_constants[env]['NFT_address'],
+                'privileges': True,
+                'tokenId': True
+            },
+            'auth': 'access_token',
+            'return': 'privilege_token'
+        }
+        return self.request('POST', 'TokenExchange', '/v1/tokens/exchange', exchange=exchange)
 
     ######################## TRIPS ########################
     # trips - /v1/vehicle/:tokenId/trips [GET]
 
     ######################## USER ########################
     # get_user - /v1/user [GET]
+    async def user(self, access_token):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        return self.request('GET', 'User', '/v1/user', headers=headers)
     # update_user - /v1/user [PUT]
     # delete_user - /v1/user [DELETE]
     # send_confirmation_email - /v1/user/send-confirmation-email [POST]
