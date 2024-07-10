@@ -508,12 +508,56 @@ class DIMO:
 
     ######################## VEHICLE SIGNAL DECORDER ########################
     # list_config_urls_by_vin - /v1/device-config/vin/:vin/urls [GET]
+    async def list_config_urls_by_vin(self, vin, protocol=None):
+        params = {
+            'protocol': protocol
+        }
+        url = f'/v1/device-config/vin/{vin}/urls'
+        return self.request('GET', 'VehicleSignalDecoding', url, params=params)
     # list_config_urls_by_address - /v1/device-config/eth-addr/:address/urls [GET]
+    async def list_config_urls_by_address(self, address, protocol=None):
+        params = {
+            'protocol': protocol
+        }
+        url = f'/v1/device-config/eth-addr/{address}/urls'
+        return self.request('GET', 'VehicleSignalDecoding', url, params=params)
     # get_pid_configs - /v1/device-config/pids/:templateName [GET]
+    async def get_pid_configs(self, template_name):
+        url = f'/v1/device-config/pids/{template_name}'
+        return self.request('GET', 'VehicleSignalDecoding', url)
     # get_device_settings - /v1/device-config/settings/:templateName [GET]
+    async def get_device_settings(self, template_name):
+        url = f'/v1/device-config/settings/{template_name}'
+        return self.request('GET', 'VehicleSignalDecoding', url)
     # get_dbc_text - /v1/device-config/dbc/:templateName [GET]
+    async def get_dbc_text(self, template_name):
+        url = f'/v1/device-config/dbc/{template_name}'
+        return self.request('GET','VehicleSignalDecoding', url)
     # get_device_status_by_address - /v1/device-config/eth-addr/:address/status [GET]
+    async def get_device_status_by_address(self, address):
+        url = f'/v1/device-config/eth-addr/{address}/status'
+        return self.request('GET','VehicleSignalDecoding', url)
     # set_device_status_by_address - /v1/device-config/eth-addr/:address/status [PATCH]
+    async def set_device_status_by_address(self, privilege_token, address):
+        headers = {
+            'Authorization': f'Bearer {privilege_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/device-config/eth-addr/{address}/status'
+        return self.request('PATCH','VehicleSignalDecoding', url, headers=headers)
     # get_jobs_by_address - /v1/device-config/eth-addr/:address/jobs [GET]
+    async def get_jobs_by_address(self, address):
+        url = f'/v1/device-config/eth-addr/{address}/jobs'
+        return self.request('GET','VehicleSignalDecoding', url)
     # get_pending_jobs_by_address - /v1/device-config/eth-addr/:address/jobs/pending
+    async def get_pending_jobs_by_address(self, address):
+        url = f'/v1/device-config/eth-addr/{address}/jobs/pending'
+        return self.request('GET','VehicleSignalDecoding', url)
     # set_job_status_by_address - /v1/device-config/eth-addr/:address/jobs/:jobId/:status
+    async def set_job_status_by_address(self, privilege_token, address, job_id, status):
+        headers = {
+            'Authorization': f'Bearer {privilege_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/device-config/eth-addr/{address}/jobs/{job_id}/{status}'
+        return self.request('PATCH','VehicleSignalDecoding', url, headers=headers)
