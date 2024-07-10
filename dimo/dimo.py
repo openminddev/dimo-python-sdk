@@ -177,7 +177,9 @@ class DIMO:
         url = f'/v1/user/device-data/{user_device_id}/export/json/email'
         return self.request('POST', 'DeviceData', url, headers=headers)
 
-    ######################## DEVICE DEFINITIONS – BEING DEPRICATED ########################
+    ######################## DEVICE DEFINITIONS ########################
+    ######################## LEGACY/DEPRECATED: SEE DOCS:
+    # https://docs.dimo.zone/developer-platform/rest-api-references/dimo-protocol/device-definitions-api/device-definitions-api-endpoints
 
     async def get_by_mmy(self, make, model, year):
         params = {
@@ -186,12 +188,17 @@ class DIMO:
             'year': year
         }
         return self.request('GET', 'DeviceDefinitions', '/device-definitions', params=params)
+
     async def get_by_id(self, id):
-        return self.request('GET', 'DeviceDefinitions', '/device-definitions/:id')
+        url = f'/device-definitions/{id}'
+        return self.request('GET', 'DeviceDefinitions', url)
+
     async def list_device_makes(self):
         return self.request('GET', 'DeviceDefinitions', '/device-makes')
+
     async def get_device_type_by_id(self, id):
-        return self.request('GET', 'DeviceDefinitions', '/device-types/:id')
+        url = f'/device-types/{id}'
+        return self.request('GET', 'DeviceDefinitions', url)
 
     ######################## DEVICES ########################
     # create_vehicle - /v1/user/devices [POST]
