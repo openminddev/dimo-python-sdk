@@ -78,14 +78,14 @@ class DIMO:
             env=env
         )
 
-        form_data = {
+        body = {
             'client_id': client_id,
             'domain': domain,
             'state': challenge['state'],
             'signature': sign,
             'grant_type': grant_type
         }
-        submit = await self.submit_challenge(form_data, headers)
+        submit = await self.submit_challenge(body, headers)
         return submit
     ######################## DEVICE DATA - SWITCHING TO TELEMETRY ########################
     def get_vehicle_history(self, token_id):
@@ -353,12 +353,13 @@ class DIMO:
             'Authorization': f'Bearer {access_token}',
             'Content-Type': 'application/json'
         }
-        params = {
-            'nftContractAddress':  dimo_constants[env]['NFT_address'],
-            'privileges': privileges,
-            'tokenId': token_id
-        }
-        return self.request('POST', 'TokenExchange', '/v1/tokens/exchange', headers=headers, params=params)
+        body = {
+                'nftContractAddress':  dimo_constants[env]['NFT_address'],
+                'privileges': privileges,
+                'tokenId': token_id
+            }
+        response = self.request('POST', 'TokenExchange', '/v1/tokens/exchange', headers=headers, data=body)
+        return response
 
     ######################## TRIPS ########################
     # trips - /v1/vehicle/:tokenId/trips [GET]
