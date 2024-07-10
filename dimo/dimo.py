@@ -87,37 +87,95 @@ class DIMO:
         }
         submit = await self.submit_challenge(body, headers)
         return submit
-    ######################## DEVICE DATA - SWITCHING TO TELEMETRY ########################
-    def get_vehicle_history(self, token_id):
+    ######################## DEVICE DATA  ########################
+    ######################## LEGACY/DEPRECATED: SEE DOCS:
+    # https://docs.dimo.zone/developer-platform/rest-api-references/dimo-protocol/device-data-api/device-data-api-endpoints
+    async def get_vehicle_history(self, privileged_token, token_id):
+        headers = {
+            'Authorization': f'Bearer {privileged_token}',
+            'Content-Type': 'application/json'
+        }
         url = f'/v2/vehicle/{token_id}/history'
-        return self.request('GET', 'DeviceData', url)
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def get_vehicle_status(self, token_id, **kwargs):
-        return self.request('GET', 'DeviceData', '/v2/vehicle/:tokenId/status')
+    async def get_vehicle_status(self, privileged_token, token_id):
+        headers = {
+            'Authorization': f'Bearer {privileged_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v2/vehicle/{token_id}/status'
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def get_v1_vehicle_history(self, token_id, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/history')
+    async def get_v1_vehicle_history(self, privileged_token, token_id):
+        headers = {
+            'Authorization': f'Bearer {privileged_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/vehicle/{token_id}/history'
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def get_v1_vehicle_status(self, token_id, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/status')
+    async def get_v1_vehicle_status(self, privileged_token, token_id):
+        headers = {
+            'Authorization': f'Bearer {privileged_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/vehicle/{token_id}/status'
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def get_v1_vehicle_status_raw(self, token_id, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/vehicle/:tokenId/status-raw')
+    async def get_v1_vehicle_status_raw(self, privileged_token, token_id):
+        headers = {
+            'Authorization': f'Bearer {privileged_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/vehicle/{token_id}/status-raw'
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def get_user_device_status(self, userDeviceId, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/status')
+    async def get_user_device_status(self, access_token, user_device_id):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/user/device-data/{user_device_id}/status'
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def get_user_device_history(self, userDeviceId, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/historical')
+    async def get_user_device_history(self, access_token, user_device_id, start_date=None, end_date=None):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        params = {
+            'startDate': start_date,
+            'endDate': end_date
+        }
+        url = f'/v1/user/device-data/{user_device_id}/historical'
+        return self.request('GET', 'DeviceData', url, headers=headers, params=params)
 
-    def get_daily_distance(self, userDeviceId, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/daily-distance')
+    async def get_daily_distance(self, access_token, user_device_id, time_zone):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        params = {
+            'timeZone': time_zone
+        }
+        url = f'/v1/user/device-data/{user_device_id}/daily-distance'
+        return self.request('GET', 'DeviceData', url, headers=headers, params=params)
 
-    def get_total_distance(self, userDeviceId, **kwargs):
-        return self.request('GET', 'DeviceData', '/v1/user/device-data/:userDeviceId/distance-driven')
+    async def get_total_distance(self, access_token, user_device_id):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/user/device-data/{user_device_id}/distance-driven'
+        return self.request('GET', 'DeviceData', url, headers=headers)
 
-    def send_json_export_email(self, userDeviceId, **kwargs):
-        return self.request('POST', 'DeviceData', '/v1/user/device-data/:userDeviceId/export/json/email')
+    async def send_json_export_email(self, access_token, user_device_id):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/user/device-data/{user_device_id}/export/json/email'
+        return self.request('POST', 'DeviceData', url, headers=headers)
 
     ######################## DEVICE DEFINITIONS – BEING DEPRICATED ########################
 
@@ -362,7 +420,13 @@ class DIMO:
         return response
 
     ######################## TRIPS ########################
-    # trips - /v1/vehicle/:tokenId/trips [GET]
+    async def trips(self, privilege_token, token_id):
+        headers = {
+            'Authorization': f'Bearer {privilege_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/vehicle/{token_id}/trips'
+        return self.request('GET', 'Trips', url, headers=headers)
 
     ######################## USER ########################
     async def user(self, access_token):
