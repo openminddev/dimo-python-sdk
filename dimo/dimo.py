@@ -1,4 +1,5 @@
 import requests
+from requests.api import _HeadersMapping
 from request import Request
 from endpoint import Endpoint
 from environments import dimo_environment
@@ -410,6 +411,11 @@ class DIMO:
 
     ######################## EVENTS ########################
     # get_events - /v1/events [GET]
+    async def get_events(self, access_token):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
 
     ######################## TOKEN EXCHANGE ########################
     # exchange - /v1/tokens/exchange [POST]
@@ -457,12 +463,48 @@ class DIMO:
         }
         return self.request('DELETE', 'User', '/v1/user', headers=headers)
     # send_confirmation_email - /v1/user/send-confirmation-email [POST]
+    async def send_confirmation_email(self, access_token):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        return self.request('POST', 'User', '/v1/user/send-confirmation-email', headers=headers)
     # confirm_email - v1/user/confirm-email [POST]
+    async def confirm_email(self, access_token, confirm_email_request):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        params = {
+            'confirmEmailRequest': confirm_email_request
+        }
+        return self.request('POST', 'User', 'v1/user/confirm-email', headers=headers)
 
     ######################## VALUATIONS ########################
     # get_valuations - /v1/user/devices/:userDeviceId/valuations [GET]
+    async def get_valuations(self, access_token, user_device_id):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/user/devices/{user_device_id}/valuations'
+        return self.request('GET', 'Valuations', url, headers=headers)
     # get_instant_offer - /v1/user/devices/:userDeviceId/instant-offer [GET]
-    # get_offers - /v1/user/devices/:userDeviceId/offers
+    async def get_instant_offer(self, access_token, user_device_id):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/user/devices/{user_device_id}/instant-offer'
+        return self.request('GET', 'Valuations', url, headers=headers)
+    # get_offers - /v1/user/devices/:userDeviceId/offers [GET]
+    async def get_offers(self, access_token, user_device_id):
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        url = f'/v1/user/devices/{user_device_id}/offers'
+        return self.request('GET', 'Valuations', url, headers=headers)
 
     ######################## VEHICLE SIGNAL DECORDER ########################
     # list_config_urls_by_vin - /v1/device-config/vin/:vin/urls [GET]
