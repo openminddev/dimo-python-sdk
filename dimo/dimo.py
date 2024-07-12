@@ -43,10 +43,11 @@ class DIMO:
     async def generate_challenge(self,
         client_id,
         domain,
-        scope,
-        response_type,
         address,
-        headers):
+        headers,
+        scope='openid email',
+        response_type='code'
+    ):
         data = {
             'client_id': client_id,
             'domain': domain,
@@ -70,10 +71,11 @@ class DIMO:
     async def submit_challenge(self, form_data, headers):
         return self.request('POST', 'Auth', '/auth/web3/submit_challenge', data=form_data, headers=headers)
 
-    async def get_token(self, client_id, domain, scope, response_type, address, private_key, grant_type="authorization_code", env="Production"):
+    async def get_token(self, client_id, domain, address, private_key, scope='openid email', response_type='code', grant_type="authorization_code", env="Production"):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
+
         challenge = await self.generate_challenge(
             headers=headers,
             client_id=client_id,
@@ -96,6 +98,7 @@ class DIMO:
             'signature': sign,
             'grant_type': grant_type
         }
+
         submit = await self.submit_challenge(body, headers)
         return submit
     ######################## DEVICE DATA  ########################
