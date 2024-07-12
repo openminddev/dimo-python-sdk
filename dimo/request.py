@@ -48,19 +48,3 @@ class Request:
             return path
         get_url, get_url_by_id = path
         return get_url if not _id else get_url_by_id
-
-    @staticmethod
-    def _url_id_setter(url, obj_id):
-        return re.sub(r':[a-z]*Id', obj_id, url)
-
-    @staticmethod
-    def _clean_params(raw_params):
-        if type(raw_params) is str:
-            params_arr = raw_params.split(",")
-            params_dict = {}
-            for parameter in params_arr:
-                key, value = parameter.split("=")
-                params_dict[key] = value
-            return params_dict
-        elif type(raw_params) is dict:
-            return raw_params

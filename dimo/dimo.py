@@ -48,7 +48,7 @@ class DIMO:
         scope='openid email',
         response_type='code'
     ):
-        data = {
+        body = {
             'client_id': client_id,
             'domain': domain,
             'scope': scope,
@@ -59,7 +59,7 @@ class DIMO:
             'POST',
             'Auth',
             '/auth/web3/generate_challenge',
-            data=data,
+            data=body,
             headers=headers
         )
 
@@ -105,12 +105,20 @@ class DIMO:
     ######################## LEGACY/DEPRECATED: SEE DOCS:
     # https://docs.dimo.zone/developer-platform/rest-api-references/dimo-protocol/device-data-api/device-data-api-endpoints
 
-    async def get_vehicle_history(self, privileged_token, token_id):
+    async def get_vehicle_history(self, privileged_token, token_id, start_time=None, end_time=None, buckets=None):
+        params = {}
+        if start_time is not None:
+            params['startTime'] = start_time
+        if end_time is not None:
+            params['endTime'] = end_time
+        if buckets is not None:
+            params['buckets'] = buckets
         url = f'/v2/vehicle/{token_id}/history'
         return self.request(
             'GET',
             'DeviceData',
             url,
+            params=params,
             headers=self._get_auth_headers(privileged_token)
         )
 
@@ -123,12 +131,18 @@ class DIMO:
             headers=self._get_auth_headers(privileged_token)
         )
 
-    async def get_v1_vehicle_history(self, privileged_token, token_id):
+    async def get_v1_vehicle_history(self, privileged_token, token_id, start_time=None, end_time=None):
+        params = {}
+        if start_time is not None:
+            params['startTime'] = start_time
+        if end_time is not None:
+            params['endTime'] = end_time
         url = f'/v1/vehicle/{token_id}/history'
         return self.request(
             'GET',
             'DeviceData',
             url,
+            params=params,
             headers=self._get_auth_headers(privileged_token)
         )
 
@@ -160,17 +174,18 @@ class DIMO:
         )
 
     async def get_user_device_history(self, access_token, user_device_id, start_date=None, end_date=None):
-        params = {
-            'startDate': start_date,
-            'endDate': end_date
-        }
+        params = {}
+        if start_date is not None:
+            params['startDate'] = start_date
+        if end_date is not None:
+            params['endDate'] = end_date
         url = f'/v1/user/device-data/{user_device_id}/historical'
         return self.request(
             'GET',
             'DeviceData',
             url,
+            params=params,
             headers=self._get_auth_headers(access_token),
-            params=params
         )
 
     async def get_daily_distance(self, access_token, user_device_id, time_zone):
@@ -244,7 +259,7 @@ class DIMO:
     ######################## DEVICES ########################
 
     async def create_vehicle(self, access_token, country_code, device_definition_id):
-        params = {
+        body = {
             'countryCode': country_code,
             'deviceDefinitionId': device_definition_id
         }
@@ -253,11 +268,11 @@ class DIMO:
             'Devices',
             '/v1/user/devices',
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def create_vehicle_from_smartcar(self, access_token, code, country_code, redirect_uri):
-        params = {
+        body = {
             'code': code,
             'countryCode': country_code,
             'redirectURI': redirect_uri
@@ -267,11 +282,11 @@ class DIMO:
             'Devices',
             '/v1/user/devices/fromsmartcar',
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def create_vehicle_from_vin(self, access_token, can_protocol, country_code, vin):
-        params = {
+        body = {
             'canProtocol': can_protocol,
             'countryCode': country_code,
             'vin': vin
@@ -281,7 +296,7 @@ class DIMO:
             'Devices',
             '/v1/user/devices/fromvin',
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def update_vehicle_vin(self, access_token, user_device_id):
@@ -303,7 +318,7 @@ class DIMO:
         )
 
     async def sign_claiming_payload(self, access_token, serial, claim_request):
-        params = {
+        body = {
             'claimRequest': claim_request
         }
         url = f'/v1/aftermarket/device/by-serial/{serial}/commands/claim'
@@ -312,7 +327,7 @@ class DIMO:
             'Devices',
             url,
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def get_minting_payload(self, access_token, user_device_id):
@@ -325,7 +340,7 @@ class DIMO:
         )
 
     async def sign_minting_payload(self, access_token, user_device_id, mint_request):
-        params = {
+        body = {
             'mintRequest': mint_request
         }
         url = f'/v1/user/devices/{user_device_id}/commands/mint'
@@ -334,7 +349,7 @@ class DIMO:
             'Devices',
             url,
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def opt_in_share_data(self, access_token, user_device_id):
@@ -365,7 +380,7 @@ class DIMO:
         )
 
     async def sign_pairing_payload(self, access_token, user_device_id, user_signature):
-        params = {
+        body = {
             'userSignature': user_signature
         }
         url = f'/v1/user/devices/{user_device_id}/aftermarket/commands/pair'
@@ -374,7 +389,7 @@ class DIMO:
             'Devices',
             url,
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def get_unpairing_payload(self, access_token, user_device_id):
@@ -387,7 +402,7 @@ class DIMO:
         )
 
     async def sign_unpairing_payload(self, access_token, user_device_id, user_signature):
-        params = {
+        body = {
             'userSignature': user_signature
         }
         url = f'/v1/user/devices/{user_device_id}/aftermarket/commands/unpair'
@@ -396,7 +411,7 @@ class DIMO:
             'Devices',
             url,
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def lock_doors(self, privilege_token, token_id):
@@ -445,7 +460,7 @@ class DIMO:
         )
 
     async def submit_error_codes(self, access_token, user_device_id, query_device_error_codes):
-        params = {
+        body = {
             'queryDeviceErrorCodes': query_device_error_codes
         }
         url = f'/v1/user/devices/{user_device_id}/error-codes'
@@ -454,7 +469,7 @@ class DIMO:
             'Devices',
             url,
             headers=self._get_auth_headers(access_token),
-            params=params
+            data=body
         )
 
     async def clear_error_codes(self, access_token, user_device_id):
@@ -519,12 +534,16 @@ class DIMO:
         return response
 
     ######################## TRIPS ########################
-    async def trips(self, privilege_token, token_id):
+    async def trips(self, privilege_token, token_id, page=None):
+        params = {}
+        if page is not None:
+            params['page'] = [page]
         url = f'/v1/vehicle/{token_id}/trips'
         return self.request(
             'GET',
             'Trips',
             url,
+            params=params,
             headers=self._get_auth_headers(privilege_token)
         )
 
@@ -537,11 +556,15 @@ class DIMO:
             headers=self._get_auth_headers(access_token)
         )
 
-    async def update_user(self, access_token):
+    async def update_user(self, access_token, update_user_request):
+        body = {
+            'updateUserRequest': update_user_request
+        }
         return self.request(
             'PUT',
             'User',
             '/v1/user',
+            data=body,
             headers=self._get_auth_headers(access_token)
         )
 
@@ -562,13 +585,14 @@ class DIMO:
         )
 
     async def confirm_email(self, access_token, confirm_email_request):
-        params = {
+        body = {
             'confirmEmailRequest': confirm_email_request
         }
         return self.request(
             'POST',
             'User',
             '/v1/user/confirm-email',
+            data=body,
             headers=self._get_auth_headers(access_token)
         )
 
@@ -604,9 +628,9 @@ class DIMO:
     ######################## VEHICLE SIGNAL DECORDER ########################
 
     async def list_config_urls_by_vin(self, vin, protocol=None):
-        params = {
-            'protocol': protocol
-        }
+        params = {}
+        if protocol is not None:
+            params['protocol'] = protocol
         url = f'/v1/device-config/vin/{vin}/urls'
         return self.request(
             'GET',
@@ -616,9 +640,9 @@ class DIMO:
         )
 
     async def list_config_urls_by_address(self, address, protocol=None):
-        params = {
-            'protocol': protocol
-        }
+        params = {}
+        if protocol is not None:
+            params['protocol'] = protocol
         url = f'/v1/device-config/eth-addr/{address}/urls'
         return self.request(
             'GET',
@@ -659,12 +683,16 @@ class DIMO:
             url
         )
 
-    async def set_device_status_by_address(self, privilege_token, address):
+    async def set_device_status_by_address(self, privilege_token, address, config):
+        body = {
+            'config': config
+        }
         url = f'/v1/device-config/eth-addr/{address}/status'
         return self.request(
             'PATCH',
             'VehicleSignalDecoding',
             url,
+            data=body,
             headers=self._get_auth_headers(privilege_token)
         )
 
