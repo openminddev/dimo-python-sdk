@@ -1,6 +1,5 @@
 import requests
 from request import Request
-from endpoint import Endpoint
 from environments import dimo_environment
 from constants import dimo_constants
 import asyncio
@@ -507,7 +506,6 @@ class DIMO:
 
     ######################## EVENTS ########################
 
-    # get_events - /v1/events [GET]
     async def get_events(self, access_token):
         return self.request(
             'GET',
