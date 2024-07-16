@@ -8,6 +8,10 @@ from trips import Trips
 from user import User
 from valuations import Valuations
 from vehicle_signal_decoding import VehicleSignalDecoding
+
+from identity import Identity
+from telemetry import Telemetry
+
 import requests
 from request import Request
 from environments import dimo_environment
@@ -29,6 +33,8 @@ class DIMO:
         self.trips = Trips(self.request, self._get_auth_headers)
         self.valuations = Valuations(self.request, self._get_auth_headers)
         self.vehicle_signal_decoding = VehicleSignalDecoding(self.request, self._get_auth_headers)
+        self.identity = Identity(self)
+        # self.telemetry = Telemetry(self)
         self._session = Request.session
 
     def _get_full_path(self, service, path, params=None):
@@ -51,3 +57,22 @@ class DIMO:
     def request(self, http_method, service, path, **kwargs):
         full_path = self._get_full_path(service, path) # Get full path to make request
         return Request(http_method, full_path, self._session)(**kwargs)
+
+    async def query(self, service, query, variables=None, token=None):
+        headers = self._get_auth_headers(token) if token else {}
+        headers['Content-Type'] = 'application/json'
+        headers['User-Agent'] = 'dimo-python-sdk'
+
+        data = {
+            'query': query,
+            'variables': variables or {}
+        }
+
+        response = self.request(
+            'POST',
+            service,
+            '',
+            headers=headers,
+            data=data
+        )
+        return response
