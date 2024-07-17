@@ -12,12 +12,9 @@ from vehicle_signal_decoding import VehicleSignalDecoding
 from identity import Identity
 from telemetry import Telemetry
 
-import requests
 from request import Request
 from environments import dimo_environment
-import asyncio
 import re
-import urllib.parse
 
 
 class DIMO:
@@ -39,8 +36,9 @@ class DIMO:
         self.telemetry = Telemetry(self)
         self._session = Request.session
 
+    # Creates a full path for endpoints combining DIMO service, specific endpoint, and optional params
     def _get_full_path(self, service, path, params=None):
-        base_path = self.urls[service] # Set a base_path for the DIMO service you're using
+        base_path = self.urls[service] 
         full_path = f"{base_path}{path}"
 
         if params:
@@ -49,17 +47,19 @@ class DIMO:
                 full_path = re.sub(pattern, str(value), full_path)
         return full_path # Return the full path of the endpoint you'll make a request to.
 
+    # Sets headers based on access_token or privileged_token
     def _get_auth_headers(self, token):
         return {
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json'
         }
 
-    # TODO: Cleanup **kwargs as needed
+    # request method for HTTP requests for the REST API
     def request(self, http_method, service, path, **kwargs):
-        full_path = self._get_full_path(service, path) # Get full path to make request
-        return Request(http_method, full_path, self._session)(**kwargs)
+        full_path = self._get_full_path(service, path)
+        return Request(http_method, full_path)(**kwargs)
 
+    # query method for graphQL queries, identity and telemetry
     async def query(self, service, query, variables=None, token=None):
         headers = self._get_auth_headers(token) if token else {}
         headers['Content-Type'] = 'application/json'

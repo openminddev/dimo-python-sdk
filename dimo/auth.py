@@ -1,6 +1,7 @@
 from web3 import Web3
 from eth_account.messages import encode_defunct
 from constants import dimo_constants
+from urllib.parse import urlencode
 
 class Auth:
 
@@ -14,8 +15,7 @@ class Auth:
         address,
         headers,
         scope='openid email',
-        response_type='code'
-    ):
+        response_type='code'):
         body = {
             'client_id': client_id,
             'domain': domain,
@@ -23,11 +23,12 @@ class Auth:
             'response_type': response_type,
             'address': address
         }
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
         return self._request(
             'POST',
             'Auth',
             '/auth/web3/generate_challenge',
-            data=body,
+            data=urlencode(body),
             headers=headers
         )
 
