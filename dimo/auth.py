@@ -39,7 +39,20 @@ class Auth:
     async def submit_challenge(self, form_data, headers):
         return self._request('POST', 'Auth', '/auth/web3/submit_challenge', data=form_data, headers=headers)
 
-    async def get_token(self, client_id, domain, address, private_key, scope='openid email', response_type='code', grant_type="authorization_code", env="Production"):
+    # Requires client_id, domain, and private_key. Address defaults to client_id.
+    async def get_token(self, 
+                        client_id, 
+                        domain, 
+                        private_key, 
+                        address=None, 
+                        scope='openid email', 
+                        response_type='code', 
+                        grant_type="authorization_code", 
+                        env="Production"):
+        
+        if address is None:
+            address = client_id
+        
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }

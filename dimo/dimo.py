@@ -27,14 +27,16 @@ class DIMO:
         self.urls = dimo_environment[env]
         self.auth = Auth(self.request, self._get_auth_headers)
         self.device_data = DeviceData(self.request, self._get_auth_headers)
+        self.device_definitions = DeviceDefinitions(self.request, self._get_auth_headers)
         self.devices = Devices(self.request, self._get_auth_headers)
         self.events = Events(self.request, self._get_auth_headers)
         self.token_exchange = TokenExchange(self.request, self._get_auth_headers)
         self.trips = Trips(self.request, self._get_auth_headers)
+        self.user = User(self.request, self._get_auth_headers)
         self.valuations = Valuations(self.request, self._get_auth_headers)
         self.vehicle_signal_decoding = VehicleSignalDecoding(self.request, self._get_auth_headers)
         self.identity = Identity(self)
-        # self.telemetry = Telemetry(self)
+        self.telemetry = Telemetry(self)
         self._session = Request.session
 
     def _get_full_path(self, service, path, params=None):

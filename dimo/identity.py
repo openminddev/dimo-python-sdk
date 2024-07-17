@@ -1,5 +1,3 @@
-from query import query
-
 class Identity:
     def __init__(self, dimo_instance):
         self.dimo = dimo_instance
@@ -17,4 +15,29 @@ class Identity:
             }
         }
         """
+        return await self.dimo.query('Identity', query, token=token)
+
+    # Sample query - list vehicle definitions per address
+    async def list_vehicle_definitions_per_address(self, address, limit, token):
+        query = f"""
+                {{
+                    vehicles(filterBy: owner: {address}, first: {limit}) {{
+                      nodes {{
+                        aftermarketDevice {{
+                            tokenId
+                            address
+                        }}
+                          syntheticDevice {{
+                            address
+                            tokenId
+                        }}
+                        definition {{
+                          make
+                          model
+                          year
+                        }}
+                      }}
+                    }}
+                  }}
+                """
         return await self.dimo.query('Identity', query, token=token)
