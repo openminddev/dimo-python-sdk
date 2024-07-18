@@ -16,7 +16,6 @@ from request import Request
 from environments import dimo_environment
 import re
 
-
 class DIMO:
 
     def __init__(self, env="Production"):
@@ -45,7 +44,7 @@ class DIMO:
             for key, value in params.items():
                 pattern = f":{key}"
                 full_path = re.sub(pattern, str(value), full_path)
-        return full_path # Return the full path of the endpoint you'll make a request to.
+        return full_path 
 
     # Sets headers based on access_token or privileged_token
     def _get_auth_headers(self, token):
