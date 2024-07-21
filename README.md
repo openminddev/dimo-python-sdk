@@ -14,7 +14,23 @@ Please visit the DIMO [Developer Documentation](https://docs.dimo.zone/developer
 
 ## How to Use the SDK
 
-Coming Soon
+Importing the SDK:
+
+```python
+from dimo import DIMO
+```
+
+Initiate the SDK depending on the envionrment of your interest, we currently support both `Production` and `Dev` environments:
+
+```python
+dimo = DIMO("Production")
+```
+
+or
+
+```python
+dimo = DIMO("Dev")
+```
 
 ### Developer License
 
@@ -73,11 +89,14 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
 As mentioned earlier, this is the streamlined function call to directly get the `access_token`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
 
 ```python
-    auth_header = await dimo.auth.get_token(
-        client_id: '<client_id>',
-        domain: '<domain>',
-        private_key: '<private_key>'
-    )
+auth_header = await dimo.auth.get_token(
+    client_id: '<client_id>',
+    domain: '<domain>',
+    private_key: '<private_key>'
+)
+
+# Store the access_token from the auth_header dictionary
+access_token = auth_header["access_token"]
 ```
 
 ##### (Option 3) Credentials.json File
@@ -102,11 +121,11 @@ if __name__ == "__main__":
 For query parameters, simply feed in an input that matches with the expected query parameters:
 
 ```python
-    dimo.device_definitions.get_by_mmy(
-        make="<vehicle_make>",
-        model="<vehicle_model>",
-        year=2024
-    )
+await dimo.device_definitions.get_by_mmy(
+    make="<vehicle_make>",
+    model="<vehicle_model>",
+    year=2024
+)
 ```
 
 #### Path Parameters
@@ -114,5 +133,58 @@ For query parameters, simply feed in an input that matches with the expected que
 Path parameters work similarly - simply feed in an input, such as id.
 
 ```python
-    dimo.device_definitions.get_by_id(id='26G4j1YDKZhFeCsn12MAlyU3Y2H')
+await dimo.device_definitions.get_by_id(id='26G4j1YDKZhFeCsn12MAlyU3Y2H')
+```
+
+#### Body Parameters
+
+#### Privilege Tokens
+
+As the 2nd leg of the API authentication, applications may exchange for short-lived privilege tokens for specific vehicles that granted privileges to the app. This uses the [DIMO Token Exchange API](https://docs.dimo.zone/developer-platform/api-references/dimo-protocol/token-exchange-api/token-exchange-api-endpoints).
+
+For the end users of your application, they will need to share their vehicle permissions via the DIMO Mobile App or through your own implementation of privilege sharing functions - this should be built on the [`setPrivilege` function of the DIMO Vehicle Smart Contract](https://polygonscan.com/address/0xba5738a18d83d41847dffbdc6101d37c69c9b0cf#writeProxyContract).
+
+Typically, any endpoints that uses a NFT `tokenId` in path parameters will require privilege tokens. You can get the privilege token and pipe it through to corresponding endpoints like this:
+
+```python
+privilege_token = await dimo.token_exchange.exchange(access_token, privileges=[1,3,4], token_id=<vehicle_token_id>)
+
+await dimo.device_data.get_vehicle_status(token=privilege_token, vehicle_id=<vehicle_token_id>)
+```
+
+### Querying the DIMO GraphQL API
+
+The SDK accepts any type of valid custom GraphQL queries, but we've also included a few sample queries to help you understand the DIMO GraphQL APIs.
+
+#### Authentication for GraphQL API
+
+The GraphQL entry points are designed almost identical to the REST API entry points. For any GraphQL API that requires auth headers (Telemetry API for example), you can use the same pattern as you would in the REST protected endpoints.
+
+```python
+privilege_token = await dimo.token_exchange.exchange(access_token, privileges=[1,3,4], token_id=<vehicle_token_id>)
+
+telemetry = await dimo.telemetry.query(
+    token=privilege_token,
+    query=
+    """
+        query {
+            some_valid_GraphQL_query
+            }
+    """
+    )
+```
+
+#### Send a custom GraphQL query
+
+```python
+my_query =
+"""
+    {
+    vehicles (first:10) {
+        totalCount
+        }
+    }
+"""
+
+total_network_vehicles = await dimo.identity.query(query=my_query)
 ```
