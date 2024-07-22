@@ -2,7 +2,11 @@
 
 ## Installation
 
-Coming Soon
+You can install the SDK using `pip`
+
+```bash
+pip install dimo-python-sdk
+```
 
 ## Unit Testing
 
@@ -188,3 +192,7 @@ my_query =
 
 total_network_vehicles = await dimo.identity.query(query=my_query)
 ```
+
+## How to Contribute to the SDK
+
+You can read more about contributing [here](https://github.com/DIMO-Network/dimo-python-sdk/blob/dev-barrettk/CONTRIBUTING.md)
