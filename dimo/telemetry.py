@@ -11,27 +11,31 @@ class Telemetry:
     
     # Sample query - get signals latest
     async def get_signals_latest(self, token, token_id):
-        query = f"""
-        query {{
-            signalsLatest(tokenId: {token_id}) {{
-                powertrainTransmissionTravelledDistance {{
+        query = """
+        query GetSignalsLatest($tokenId: Int!) {
+            signalsLatest(tokenId: $tokenId){
+                powertrainTransmissionTravelledDistance{
                     timestamp
                     value
-                }}
-                exteriorAirTemperature {{
+                }
+                exteriorAirTemperature{
                     timestamp
                     value
-                }}
-                speed {{
+                }
+                speed {
                     timestamp
                     value
-                }}
-                powertrainType {{
+                }
+                powertrainType{
                     timestamp
                     value
-                }}
-            }}
-        }}
-    """
-        return await self.dimo.query('Telemetry', query, token=token)
+                }
+            }
+        }
+        """
+        variables = {
+            "tokenId": token_id
+        }
+
+        return await self.dimo.query('Telemetry', query, token=token, variables=variables)
 
