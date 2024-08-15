@@ -1,6 +1,6 @@
 from web3 import Web3
 from eth_account.messages import encode_defunct
-from constants import dimo_constants
+from dimo.constants import dimo_constants
 from urllib.parse import urlencode
 
 class Auth:

@@ -10,11 +10,11 @@ authors = [
 ]
 description = "DIMO SDK in Python"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 keywords=["dimo", "sdk", "python", "depin", "web3"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
 ]
 

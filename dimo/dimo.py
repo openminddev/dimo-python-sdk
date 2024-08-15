@@ -1,19 +1,19 @@
-from auth import Auth
-from device_data import DeviceData
-from device_definitions import DeviceDefinitions
-from devices import Devices
-from events import Events
-from token_exchange import TokenExchange
-from trips import Trips
-from user import User
-from valuations import Valuations
-from vehicle_signal_decoding import VehicleSignalDecoding
+from dimo.auth import Auth
+from dimo.device_data import DeviceData
+from dimo.device_definitions import DeviceDefinitions
+from dimo.devices import Devices
+from dimo.events import Events
+from dimo.token_exchange import TokenExchange
+from dimo.trips import Trips
+from dimo.user import User
+from dimo.valuations import Valuations
+from dimo.vehicle_signal_decoding import VehicleSignalDecoding
 
-from identity import Identity
-from telemetry import Telemetry
+from dimo.identity import Identity
+from dimo.telemetry import Telemetry
 
-from request import Request
-from environments import dimo_environment
+from dimo.request import Request
+from dimo.environments import dimo_environment
 import re
 
 class DIMO:
