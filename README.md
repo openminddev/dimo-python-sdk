@@ -16,6 +16,19 @@ Coming Soon
 
 Please visit the DIMO [Developer Documentation](https://docs.dimo.zone/developer-platform) to learn more about building on DIMO and detailed information on the API.
 
+
+### Developer License
+
+In order to build on DIMO, you’ll need to get a [DIMO Developer License](https://docs.dimo.zone/developer-platform/getting-started/developer-license) via the [DIMO Dev Console](https://console.dimo.xyz/sign-up). The DIMO Developer license is our approach and design to a more secured, decentralized access control. As a developer, you will need to perform the following steps:
+
+1. Sign Up for an Account - You can use your Google, Github, or supported Web3 wallet to register.
+2. Complete Registration - Enter the details of the application that you’re building.
+3. Connect Your Wallet - In the console dashboard, connect your Web3 wallet. This will be the wallet that will pay & act as the holder of the developer license. NOTE: You must have some DIMO tokens, as well as some MATIC (for gas), to pay for the developer license.
+4. Create An App - Click “Create App”, fill out the form & select your preferred environment (at this time, please select “Production” until we’re ready to launch our Sandbox environment), then hit “Create Application”. Finally, set a spending limit for your connected wallet.
+5. Finish Configuring Your Application - Once your project is initialized, you’ll use your connected wallet to generate an API Key and any optional Redirect URIs.
+
+If you prefer a video overview on getting setup within the DIMO Dev Console, check out our [DIMO Developer Workshop](https://youtu.be/VefEIQUlOUI?si=Am5h_cekMVJcXELM&t=373).
+
 ## How to Use the SDK
 
 Importing the SDK:
@@ -35,18 +48,6 @@ or
 ```python
 dimo = DIMO("Dev")
 ```
-
-### Developer License
-
-In order to build on DIMO, you’ll need to get a [DIMO Developer License](https://docs.dimo.zone/developer-platform/getting-started/developer-license) via the [DIMO Dev Console](https://console.dimo.xyz/sign-up). The DIMO Developer license is our approach and design to a more secured, decentralized access control. As a developer, you will need to perform the following steps:
-
-1. Sign Up for an Account - You can use your Google, Github, or supported Web3 wallet to register.
-2. Complete Registration - Enter the details of the application that you’re building.
-3. Connect Your Wallet - In the console dashboard, connect your Web3 wallet. This will be the wallet that will pay & act as the holder of the developer license. NOTE: You must have some DIMO tokens, as well as some MATIC (for gas), to pay for the developer license.
-4. Create An App - Click “Create App”, fill out the form & select your preferred environment (at this time, please select “Production” until we’re ready to launch our Sandbox environment), then hit “Create Application”. Finally, set a spending limit for your connected wallet.
-5. Finish Configuring Your Application - Once your project is initialized, you’ll use your connected wallet to generate an API Key and any optional Redirect URIs.
-
-If you prefer a video overview on getting setup within the DIMO Dev Console, check out our [DIMO Developer Workshop](https://youtu.be/VefEIQUlOUI?si=Am5h_cekMVJcXELM&t=373).
 
 ### DIMO Streams
 
