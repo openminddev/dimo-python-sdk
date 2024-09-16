@@ -1,38 +1,19 @@
-# Local development imports
-from api.auth import Auth
-from api.device_data import DeviceData
-from api.device_definitions import DeviceDefinitions
-from api.devices import Devices
-from api.events import Events
-from api.token_exchange import TokenExchange
-from api.trips import Trips
-from api.user import User
-from api.valuations import Valuations
-from api.vehicle_signal_decoding import VehicleSignalDecoding
+from .api.auth import Auth
+from .api.device_data import DeviceData
+from .api.device_definitions import DeviceDefinitions
+from .api.devices import Devices
+from .api.events import Events
+from .api.token_exchange import TokenExchange
+from .api.trips import Trips
+from .api.user import User
+from .api.valuations import Valuations
+from .api.vehicle_signal_decoding import VehicleSignalDecoding
 
-from graphql.identity import Identity
-from graphql.telemetry import Telemetry
+from .graphql.identity import Identity
+from .graphql.telemetry import Telemetry
 
-from request import Request
-from environments import dimo_environment
-
-# PyPi package imports (commented out)
-# from dimo.api.auth import Auth
-# from dimo.api.device_data import DeviceData
-# from dimo.api.device_definitions import DeviceDefinitions
-# from dimo.api.devices import Devices
-# from dimo.api.events import Events
-# from dimo.api.token_exchange import TokenExchange
-# from dimo.api.trips import Trips
-# from dimo.api.user import User
-# from dimo.api.valuations import Valuations
-# from dimo.api.vehicle_signal_decoding import VehicleSignalDecoding
-
-# from dimo.graphql.identity import Identity
-# from dimo.graphql.telemetry import Telemetry
-
-# from dimo.request import Request
-# from dimo.environments import dimo_environment
+from .request import Request
+from .environments import dimo_environment
 import re
 
 class DIMO:

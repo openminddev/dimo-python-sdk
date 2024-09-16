@@ -1,5 +1,4 @@
-from constants import dimo_constants
-# from dimo.constants import dimo_constants
+from dimo.constants import dimo_constants
 
 class TokenExchange:
 
