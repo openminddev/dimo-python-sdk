@@ -107,10 +107,6 @@ auth_header = await dimo.auth.get_token(
 access_token = auth_header["access_token"]
 ```
 
-##### (Option 3) Credentials.json File
-
-Coming Soon
-
 ### Querying the DIMO REST API
 
 The SDK supports async/await syntax using the [asyncio](https://docs.python.org/3/library/asyncio.html) library, and for making HTTP requests using the [requests](https://requests.readthedocs.io/en/latest/) library.
@@ -366,7 +362,3 @@ my_daily_max_speed = await dimo.telemetry.get_daily_max_speed(
 ## How to Contribute to the SDK
 
 You can read more about contributing [here](https://github.com/DIMO-Network/dimo-python-sdk/blob/dev-barrettk/CONTRIBUTING.md)
-
-```
-
-```
