@@ -59,7 +59,7 @@ class DIMO:
         return Request(http_method, full_path)(**kwargs)
 
     # query method for graphQL queries, identity and telemetry
-    async def query(self, service, query, variables=None, token=None):
+    def query(self, service, query, variables=None, token=None):
         headers = self._get_auth_headers(token) if token else {}
         headers['Content-Type'] = 'application/json'
         headers['User-Agent'] = 'dimo-python-sdk'
