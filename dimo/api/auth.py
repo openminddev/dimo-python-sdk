@@ -5,9 +5,10 @@ from urllib.parse import urlencode
 
 class Auth:
 
-    def __init__(self, request_method, get_auth_headers):
+    def __init__(self, request_method, get_auth_headers, env):
         self._request = request_method
         self._get_auth_headers = get_auth_headers
+        self.env = env 
 
     def generate_challenge(self,
         client_id,
@@ -32,8 +33,8 @@ class Auth:
             headers=headers
         )
 
-    def sign_challenge(self, message, private_key, env="Production"):
-        web3 = Web3(Web3.HTTPProvider(dimo_constants[env]['RPC_provider']))
+    def sign_challenge(self, message, private_key):
+        web3 = Web3(Web3.HTTPProvider(dimo_constants[self.env]['RPC_provider']))
         signed_message = web3.eth.account.sign_message(encode_defunct(text=message), private_key=private_key)
         return signed_message.signature.hex()
 
@@ -49,7 +50,7 @@ class Auth:
                         scope='openid email', 
                         response_type='code', 
                         grant_type="authorization_code", 
-                        env="Production"):
+                        ):
         
         if address is None:
             address = client_id
@@ -70,7 +71,6 @@ class Auth:
         sign = self.sign_challenge(
             message=challenge['challenge'],
             private_key=private_key,
-            env=env
         )
 
         body = {
