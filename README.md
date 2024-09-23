@@ -148,7 +148,7 @@ For the end users of your application, they will need to share their vehicle per
 Typically, any endpoints that uses a NFT `tokenId` in path parameters will require privilege tokens. You can get the privilege token and pipe it through to corresponding endpoints like this:
 
 ```python
-privilege_token = dimo.token_exchange.exchange(access_token, privileges=[1,3,4], token_id=<vehicle_token_id>)
+privilege_token = dimo.token_exchange.exchange(token=access_token, privileges=[1,3,4], token_id=<vehicle_token_id>)
 
 dimo.device_data.get_vehicle_status(token=privilege_token, vehicle_id=<vehicle_token_id>)
 ```
