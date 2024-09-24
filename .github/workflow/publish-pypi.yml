@@ -29,7 +29,7 @@
 
 #         - name: Publish package to PyPI
 #           environment:
-#             name: pypi
+#             name: production
 #             url: https://pypi.org/project/dimo-python-sdk/
 #           permissions:
 #             id-token: write
