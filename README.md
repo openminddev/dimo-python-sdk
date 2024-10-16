@@ -74,21 +74,21 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
 
 ```python
     challenge = dimo.auth.generate_challenge(
-        client_id: '<client_id>',
-        domain: '<domain>',
-        address: '<address>'
+        client_id = '<client_id>',
+        domain = '<domain>',
+        address = '<address>'
     )
 
     signature = dimo.auth.sign_challenge(
-        message: challenge['challenge'],
-        private_key: '<private_key>'
+        message = challenge['challenge'],
+        private_key = '<private_key>'
     )
 
     tokens = dimo.auth.submit_challenge(
-        client_id: '<client_id>',
-        domain: '<domain>',
-        state: challenge['state'],
-        signature: signature
+        client_id = '<client_id>',
+        domain = '<domain>',
+        state = challenge['state'],
+        signature = signature
     )
 ```
 
@@ -98,9 +98,9 @@ As mentioned earlier, this is the streamlined function call to directly get the 
 
 ```python
 auth_header = dimo.auth.get_token(
-    client_id: '<client_id>',
-    domain: '<domain>',
-    private_key: '<private_key>'
+    client_id = '<client_id>',
+    domain = '<domain>',
+    private_key = '<private_key>'
 )
 
 # Store the access_token from the auth_header dictionary
