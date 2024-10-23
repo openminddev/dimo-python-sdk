@@ -1,4 +1,5 @@
 from dimo.constants import dimo_constants
+from dimo.errors import check_type
 
 
 class TokenExchange:
@@ -8,14 +9,11 @@ class TokenExchange:
         self._get_auth_headers = get_auth_headers
 
     def exchange(
-        self, token: str, privileges: list, token_id: str, env="Production"
+        self, token: str, privileges: list, token_id: int, env: str = "Production"
     ) -> dict:
-        if not isinstance(token, str):
-            raise TypeError("token must be a string.")
-        if not isinstance(privileges, list):
-            raise TypeError("priviliges must be provided as a list, e.g. [1, 3, 4]")
-        if not isinstance(token_id, str):
-            raise TypeError("token_id must be a string.")
+        check_type("token", token, str)
+        check_type("privileges", privileges, list)
+        check_type("token_id", token_id, int)
         body = {
             "nftContractAddress": dimo_constants[env]["NFT_address"],
             "privileges": privileges,

@@ -1,3 +1,6 @@
+from dimo.errors import check_type
+
+
 class Trips:
 
     def __init__(self, request_method, get_auth_headers):
@@ -5,10 +8,8 @@ class Trips:
         self._get_auth_headers = get_auth_headers
 
     def trips(self, privilege_token: str, token_id: str, page=None) -> dict:
-        if not isinstance(privilege_token, str):
-            raise TypeError("privilege_token must be a string.")
-        if not isinstance(token_id, str):
-            raise TypeError("token_id must be a string.")
+        check_type("privilege_token", privilege_token, str)
+        # check_type("token_id", token_id, str)
         params = {}
         if page is not None:
             params["page"] = [page]
