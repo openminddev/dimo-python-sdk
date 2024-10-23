@@ -9,7 +9,7 @@ class Trips:
 
     def trips(self, privilege_token: str, token_id: str, page=None) -> dict:
         check_type("privilege_token", privilege_token, str)
-        # check_type("token_id", token_id, str)
+        check_type("token_id", token_id, str)
         params = {}
         if page is not None:
             params["page"] = [page]
