@@ -74,21 +74,21 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
 
 ```python
     challenge = dimo.auth.generate_challenge(
-        client_id: '<client_id>',
-        domain: '<domain>',
-        address: '<address>'
+        client_id = '<client_id>',
+        domain = '<domain>',
+        address = '<address>'
     )
 
     signature = dimo.auth.sign_challenge(
-        message: challenge['challenge'],
-        private_key: '<private_key>'
+        message = challenge['challenge'],
+        private_key = '<private_key>'
     )
 
     tokens = dimo.auth.submit_challenge(
-        client_id: '<client_id>',
-        domain: '<domain>',
-        state: challenge['state'],
-        signature: signature
+        client_id = '<client_id>',
+        domain = '<domain>',
+        state = challenge['state'],
+        signature = signature
     )
 ```
 
@@ -98,9 +98,9 @@ As mentioned earlier, this is the streamlined function call to directly get the 
 
 ```python
 auth_header = dimo.auth.get_token(
-    client_id: '<client_id>',
-    domain: '<domain>',
-    private_key: '<private_key>'
+    client_id = '<client_id>',
+    domain = '<domain>',
+    private_key = '<private_key>'
 )
 
 # Store the access_token from the auth_header dictionary
@@ -145,10 +145,24 @@ As the 2nd leg of the API authentication, applications may exchange for short-li
 
 For the end users of your application, they will need to share their vehicle permissions via the DIMO Mobile App or through your own implementation of privilege sharing functions - this should be built on the [`setPrivilege` function of the DIMO Vehicle Smart Contract](https://polygonscan.com/address/0xba5738a18d83d41847dffbdc6101d37c69c9b0cf#writeProxyContract).
 
-Typically, any endpoints that uses a NFT `tokenId` in path parameters will require privilege tokens. You can get the privilege token and pipe it through to corresponding endpoints like this:
+Typically, any endpoints that uses a NFT `tokenId` in path parameters will require privilege tokens. You can use this flow to obtain a privilege token.
 
 ```python
-privilege_token = dimo.token_exchange.exchange(token=access_token, privileges=[1,3,4], token_id=<vehicle_token_id>)
+
+get_priv_token = dimo.token_exchange.exchange(
+    access_token, 
+    # The access token you received using either the three step function calls, or the .get_token() shortcut 
+    privileges=[1, 3, 4],
+    # The privileges you've set for this vehicle, in list format (e.g. [1, 3, 4]) – see: https://docs.dimo.org/developer-platform/api-references/token-exchange-api/token-exchange-endpoints 
+    token_id="<token_id>" 
+    # The Vehicle NFT Token ID that you are requesting permission to
+    )
+privileged_token = get_priv_token['token']
+```
+
+Once you have the privilege token, you can pipe it through to corresponding endpoints like so:
+
+```python
 
 dimo.device_data.get_vehicle_status(token=privilege_token, vehicle_id=<vehicle_token_id>)
 ```

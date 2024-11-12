@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dimo-python-sdk"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
   { name="Barrett Kowalsky", email="barrettkowalsky@gmail.com" },
 ]
@@ -20,7 +20,7 @@ classifiers = [
 
 dependencies = [
     "requests>=2.30.0",
-    "web3>=6.20.0"
+    "web3==6.20.0"
 ]
 
 [project.urls]

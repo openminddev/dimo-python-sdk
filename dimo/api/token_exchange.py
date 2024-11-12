@@ -1,4 +1,6 @@
 from dimo.constants import dimo_constants
+from dimo.errors import check_type
+
 
 class TokenExchange:
 
@@ -6,17 +8,22 @@ class TokenExchange:
         self._request = request_method
         self._get_auth_headers = get_auth_headers
 
-    def exchange(self, token, privileges, token_id, env="Production"):
+    def exchange(
+        self, token: str, privileges: list, token_id: int, env: str = "Production"
+    ) -> dict:
+        check_type("token", token, str)
+        check_type("privileges", privileges, list)
+        check_type("token_id", token_id, int)
         body = {
-                'nftContractAddress':  dimo_constants[env]['NFT_address'],
-                'privileges': privileges,
-                'tokenId': token_id
-            }
+            "nftContractAddress": dimo_constants[env]["NFT_address"],
+            "privileges": privileges,
+            "tokenId": token_id,
+        }
         response = self._request(
-            'POST',
-            'TokenExchange',
-            '/v1/tokens/exchange',
+            "POST",
+            "TokenExchange",
+            "/v1/tokens/exchange",
             headers=self._get_auth_headers(token),
-            data=body
+            data=body,
         )
         return response
