@@ -21,7 +21,7 @@ class DIMO:
     def __init__(self, env="Production"):
         self.env = env
         self.urls = dimo_environment[env]
-        self.auth = Auth(self.request, self._get_auth_headers)
+        self.auth = Auth(self.request, self._get_auth_headers, self.env)
         self.device_data = DeviceData(self.request, self._get_auth_headers)
         self.device_definitions = DeviceDefinitions(self.request, self._get_auth_headers)
         self.devices = Devices(self.request, self._get_auth_headers)
@@ -59,7 +59,7 @@ class DIMO:
         return Request(http_method, full_path)(**kwargs)
 
     # query method for graphQL queries, identity and telemetry
-    async def query(self, service, query, variables=None, token=None):
+    def query(self, service, query, variables=None, token=None):
         headers = self._get_auth_headers(token) if token else {}
         headers['Content-Type'] = 'application/json'
         headers['User-Agent'] = 'dimo-python-sdk'
