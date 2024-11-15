@@ -1,5 +1,6 @@
 dimo_environment = {
     "Production": {
+        "Attestation": "https://attestation-api.dimo.zone",
         "Auth": "https://auth.dimo.zone",
         "Identity": "https://identity-api.dimo.zone/query",
         "Devices": "https://devices-api.dimo.zone",
@@ -14,6 +15,7 @@ dimo_environment = {
         "VehicleSignalDecoding": "https://vehicle-signal-decoding.dimo.zone",
     },
     "Dev": {
+        "Attestation": "https://attestation-api.dev.dimo.zone",
         "Auth": "https://auth.dev.dimo.zone",
         "Identity": "https://identity-api.dev.dimo.zone/query",
         "Devices": "https://devices-api.dev.dimo.zone",
