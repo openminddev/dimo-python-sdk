@@ -1,4 +1,3 @@
-from .api.attestation import Attestation
 from .api.auth import Auth
 from .api.device_data import DeviceData
 from .api.device_definitions import DeviceDefinitions
@@ -23,7 +22,6 @@ class DIMO:
     def __init__(self, env="Production"):
         self.env = env
         self.urls = dimo_environment[env]
-        self.attestation = Attestation(self.request, self._get_auth_headers)
         self.auth = Auth(self.request, self._get_auth_headers, self.env)
         self.device_data = DeviceData(self.request, self._get_auth_headers)
         self.device_definitions = DeviceDefinitions(
