@@ -75,11 +75,13 @@ class Auth:
             "grant_type": "authorization_code",
         }
 
+        encoded_data = urlencode(form_data)
+
         return self._request(
             "POST",
             "Auth",
             "/auth/web3/submit_challenge",
-            data=form_data,
+            data=encoded_data,
             headers=headers,
         )
 
