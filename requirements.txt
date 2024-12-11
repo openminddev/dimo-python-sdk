@@ -1,9 +1,4 @@
 requests>=2.30.0
 python-dotenv
-eth_account==0.11.3
+eth-account==0.13.4
 eth-utils==4.1.1
-#TODO: Upgrade this to latest version and see if it still works 
-#ADD eth-utils?? It should come along with eth_account 
-# DOUBLE CHECK DEPENDENCIES IN PYPROJECT.TOML 
-#SAVE SHIT AND MOVE TO A NEW BRANCH -- THIS BRANCH NO LONGER EXISTS
-#THEN clean up everything test again, make sure no print statements, and create PR
