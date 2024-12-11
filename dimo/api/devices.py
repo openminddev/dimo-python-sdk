@@ -174,33 +174,33 @@ class Devices:
             data=body,
         )
 
-    def lock_doors(self, privilege_token: str, token_id: str):
+    def lock_doors(self, privilege_token: str, token_id: int):
         check_type("privilege_token", privilege_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v1/vehicle/{token_id}/commands/doors/lock"
         return self._request(
             "POST", "Devices", url, headers=self._get_auth_headers(privilege_token)
         )
 
-    def unlock_doors(self, privilege_token: str, token_id: str):
+    def unlock_doors(self, privilege_token: str, token_id: int):
         check_type("privilege_token", privilege_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v1/vehicle/{token_id}/commands/doors/unlock"
         return self._request(
             "POST", "Devices", url, headers=self._get_auth_headers(privilege_token)
         )
 
-    def open_frunk(self, privilege_token: str, token_id: str):
+    def open_frunk(self, privilege_token: str, token_id: int):
         check_type("privilege_token", privilege_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v1/vehicle/{token_id}/commands/frunk/open"
         return self._request(
             "POST", "Devices", url, headers=self._get_auth_headers(privilege_token)
         )
 
-    def open_trunk(self, privilege_token: str, token_id: str):
+    def open_trunk(self, privilege_token: str, token_id: int):
         check_type("privilege_token", privilege_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v1/vehicle/{token_id}/commands/trunk/open"
         return self._request(
             "POST", "Devices", url, headers=self._get_auth_headers(privilege_token)
@@ -238,13 +238,13 @@ class Devices:
             "POST", "Devices", url, headers=self._get_auth_headers(access_token)
         )
 
-    def get_aftermarket_device(self, token_id: str):
-        check_type("token_id", token_id, str)
+    def get_aftermarket_device(self, token_id: int):
+        check_type("token_id", token_id, int)
         url = f"/v1/aftermarket/device/{token_id}"
         self._request("GET", "Devices", url)
 
-    def get_aftermarket_device_image(self, token_id: str):
-        check_type("token_id", token_id, str)
+    def get_aftermarket_device_image(self, token_id: int):
+        check_type("token_id", token_id, int)
         url = f"/v1/aftermarket/device/{token_id}/image"
         self._request("GET", "Devices", url)
 
