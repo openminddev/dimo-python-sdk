@@ -11,7 +11,7 @@ class DeviceData:
     def get_vehicle_history(
         self,
         privileged_token: str,
-        token_id: str,
+        token_id: int,
         start_time: Optional[str] = None,
         end_time: Optional[str] = None,
         buckets: Optional[str] = None,
@@ -32,9 +32,9 @@ class DeviceData:
             headers=self._get_auth_headers(privileged_token),
         )
 
-    def get_vehicle_status(self, privileged_token: str, token_id: str) -> dict:
+    def get_vehicle_status(self, privileged_token: str, token_id: int) -> dict:
         check_type("privileged_token", privileged_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v2/vehicle/{token_id}/status"
         return self._request(
             "GET", "DeviceData", url, headers=self._get_auth_headers(privileged_token)
@@ -43,12 +43,12 @@ class DeviceData:
     def get_v1_vehicle_history(
         self,
         privileged_token: str,
-        token_id: str,
+        token_id: int,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
     ) -> dict:
         check_type("privileged_token", privileged_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         check_optional_type("start_date", start_date, str)
         check_optional_type("end_date", end_date, str)
         params = {}
@@ -65,17 +65,17 @@ class DeviceData:
             headers=self._get_auth_headers(privileged_token),
         )
 
-    def get_v1_vehicle_status(self, privileged_token: str, token_id: str) -> dict:
+    def get_v1_vehicle_status(self, privileged_token: str, token_id: int) -> dict:
         check_type("privileged_token", privileged_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v1/vehicle/{token_id}/status"
         return self._request(
             "GET", "DeviceData", url, headers=self._get_auth_headers(privileged_token)
         )
 
-    def get_v1_vehicle_status_raw(self, privileged_token: str, token_id: str) -> dict:
+    def get_v1_vehicle_status_raw(self, privileged_token: str, token_id: int) -> dict:
         check_type("privileged_token", privileged_token, str)
-        check_type("token_id", token_id, str)
+        check_type("token_id", token_id, int)
         url = f"/v1/vehicle/{token_id}/status-raw"
         return self._request(
             "GET", "DeviceData", url, headers=self._get_auth_headers(privileged_token)
