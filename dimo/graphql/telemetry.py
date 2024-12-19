@@ -3,11 +3,11 @@ class Telemetry:
         self.dimo = dimo_instance
 
     # Primary query method
-    def query(self, query, token):
-        return self.dimo.query("Telemetry", query, token=token)
+    def query(self, query, vehicle_jwt):
+        return self.dimo.query("Telemetry", query, token=vehicle_jwt)
 
     # Sample query - get signals latest
-    def get_signals_latest(self, token: str, token_id: int) -> dict:
+    def get_signals_latest(self, vehicle_jwt: str, token_id: int) -> dict:
         query = """
         query GetSignalsLatest($tokenId: Int!) {
             signalsLatest(tokenId: $tokenId){
@@ -32,11 +32,13 @@ class Telemetry:
         """
         variables = {"tokenId": token_id}
 
-        return self.dimo.query("Telemetry", query, token=token, variables=variables)
+        return self.dimo.query(
+            "Telemetry", query, token=vehicle_jwt, variables=variables
+        )
 
     # Sample query - daily signals from autopi
     def get_daily_signals_autopi(
-        self, token: str, token_id: int, start_date: str, end_date: str
+        self, vehicle_jwt: str, token_id: int, start_date: str, end_date: str
     ) -> dict:
         query = """
         query GetDailySignalsAutopi($tokenId: Int!, $startDate: Time!, $endDate: Time!) {
@@ -60,11 +62,13 @@ class Telemetry:
             """
         variables = {"tokenId": token_id, "startDate": start_date, "endDate": end_date}
 
-        return self.dimo.query("Telemetry", query, token=token, variables=variables)
+        return self.dimo.query(
+            "Telemetry", query, token=vehicle_jwt, variables=variables
+        )
 
     # Sample query - daily average speed of a specific vehicle
     def get_daily_average_speed(
-        self, token: str, token_id: int, start_date: str, end_date: str
+        self, vehicle_jwt: str, token_id: int, start_date: str, end_date: str
     ) -> dict:
         query = """
         query GetDailyAverageSpeed($tokenId: Int!, $startDate: Time!, $endDate: Time!) {
@@ -82,11 +86,13 @@ class Telemetry:
         """
         variables = {"tokenId": token_id, "startDate": start_date, "endDate": end_date}
 
-        return self.dimo.query("Telemetry", query, token=token, variables=variables)
+        return self.dimo.query(
+            "Telemetry", query, token=vehicle_jwt, variables=variables
+        )
 
     # Sample query - daily max speed of a specific vehicle
     def get_daily_max_speed(
-        self, token: str, token_id: int, start_date: str, end_date: str
+        self, vehicle_jwt: str, token_id: int, start_date: str, end_date: str
     ) -> dict:
         query = """
         query GetMaxSpeed($tokenId: Int!, $startDate: Time!, $endDate: Time!) {
@@ -104,19 +110,20 @@ class Telemetry:
         """
         variables = {"tokenId": token_id, "startDate": start_date, "endDate": end_date}
 
-        return self.dimo.query("Telemetry", query, token=token, variables=variables)
+        return self.dimo.query(
+            "Telemetry", query, token=vehicle_jwt, variables=variables
+        )
 
-    # TODO: Update with Attestation API
     # Sample query - get the VIN of a specific vehicle
-    # async def get_vin(self, token, token_id):
-    #     query = """
-    #     query GetVIN($tokenId: Int!) {
-    #         vinVCLatest (tokenId: $tokenId) {
-    #             vin
-    #         }
-    #     }"""
-    #     variables = {
-    #         "tokenId": token_id
-    #     }
+    def get_vehicle_vin(self, vehicle_jwt: str, token_id: str) -> dict:
+        query = """
+        query GetVIN($tokenId: Int!) {
+            vinVCLatest (tokenId: $tokenId) {
+                vin
+            }
+        }"""
+        variables = {"tokenId": token_id}
 
-    #     return await self.dimo.query('Telemetry', query, token=token, variables=variables)
+        return self.dimo.query(
+            "Telemetry", query, token=vehicle_jwt, variables=variables
+        )

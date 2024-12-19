@@ -7,8 +7,8 @@ class Trips:
         self._request = request_method
         self._get_auth_headers = get_auth_headers
 
-    def trips(self, privilege_token: str, token_id: int, page=None) -> dict:
-        check_type("privilege_token", privilege_token, str)
+    def trips(self, vehicle_jwt: str, token_id: int, page=None) -> dict:
+        check_type("vehicle_jwt", vehicle_jwt, str)
         check_type("token_id", token_id, int)
         params = {}
         if page is not None:
@@ -19,5 +19,5 @@ class Trips:
             "Trips",
             url,
             params=params,
-            headers=self._get_auth_headers(privilege_token),
+            headers=self._get_auth_headers(vehicle_jwt),
         )

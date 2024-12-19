@@ -1,4 +1,5 @@
 from dimo.errors import check_type
+from dimo.errors import check_optional_type
 
 
 class DeviceDefinitions:
@@ -7,24 +8,50 @@ class DeviceDefinitions:
         self._request = request_method
         self._get_auth_headers = get_auth_headers
 
-    def get_by_mmy(self, make: str, model: str, year: int) -> dict:
-        check_type("make", make, str)
-        check_type("model", model, str)
-        check_type("year", year, int)
-        params = {"make": make, "model": model, "year": year}
-        return self._request(
-            "GET", "DeviceDefinitions", "/device-definitions", params=params
+    def decode_vin(self, developer_jwt: str, country_code: str, vin: str) -> dict:
+        check_type("developer_jwt", developer_jwt, str)
+        check_type("country_code", country_code, str)
+        check_type("vin", vin, str)
+        body = {
+            "countryCode": country_code,
+            "vin": vin,
+        }
+        response = self._request(
+            "POST",
+            "DeviceDefinitions",
+            "/device-definitions/decode-vin",
+            headers=self._get_auth_headers(developer_jwt),
+            data=body,
         )
+        return response
 
-    def get_by_id(self, id: str) -> dict:
-        check_type("id", id, str)
-        url = f"/device-definitions/{id}"
-        return self._request("GET", "DeviceDefinitions", url)
-
-    def list_device_makes(self) -> dict:
-        return self._request("GET", "DeviceDefinitions", "/device-makes")
-
-    def get_device_type_by_id(self, id: str):
-        check_type("id", id, str)
-        url = f"/device-types/{id}"
-        return self._request("GET", "DeviceDefinitions", url)
+    def search_device_definitions(
+        self,
+        query=None,
+        make_slug=None,
+        model_slug=None,
+        year=None,
+        page=None,
+        page_size=None,
+    ):
+        check_optional_type("query", query, str)
+        check_optional_type("make_slug", make_slug, str)
+        check_optional_type("model_slug", model_slug, str)
+        check_optional_type("year", year, int)
+        check_optional_type("page", page, int)
+        check_optional_type("page_size", page_size, int)
+        params = {
+            "query": query,
+            "makeSlug": make_slug,
+            "modelSlug": model_slug,
+            "year": year,
+            "page": page,
+            "pageSize": page_size,
+        }
+        response = self._request(
+            "GET",
+            "DeviceDefinitions",
+            "/device-definitions/search",
+            params=params,
+        )
+        return response
