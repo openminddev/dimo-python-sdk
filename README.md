@@ -56,7 +56,7 @@ To get authenticated as a developer, you must have already obtained a [Developer
 
 ##### (Option 1) 3-Step Function Calls
 
-The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow): `generate_challenge`, `sign_challenge`, and `submit_challenge`. You can use them accordingly depending on how you build your application.
+The SDK offers 3 basic functions that maps to the steps listed in [Authentication](https://docs.dimo.org/developer-platform/getting-started/developer-guide/authentication): `generate_challenge`, `sign_challenge`, and `submit_challenge`. You can use them accordingly depending on how you build your application.
 
 ```python
     challenge = dimo.auth.generate_challenge(
@@ -80,7 +80,7 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
 
 ##### (Option 2) Auth Endpoint Shortcut Function
 
-As mentioned earlier, this is the streamlined function call to directly get the `access_token`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
+As mentioned earlier, this is the streamlined function call to directly get the `developer_jwt`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
 
 ```python
 auth_header = dimo.auth.get_token(
@@ -132,7 +132,7 @@ get_vehicle_jwt = dimo.token_exchange.exchange(
     developer_jwt = dev_jwt, 
     # The Developer JWT you received using either the three step function calls, or the .get_token() shortcut 
     privileges=[1, 3, 4, 5],
-    # The privileges you've set for this vehicle, in list format (e.g. [1, 3, 4])
+    # The privileges you've set for this vehicle, in list format (e.g. [1, 3, 4, 5])
     token_id="<token_id>" 
     # The Vehicle NFT Token ID that you are requesting permission to
     )
@@ -142,8 +142,12 @@ vehicle_jwt = get_vehicle_jwt['token']
 Once you have the privilege token, you can pipe it through to corresponding endpoints like so:
 
 ```python
-
-dimo.trips.trips(vehicle_jwt=vehicle_jwt, token_id=<token_id>)
+def my_trips():
+    trip_data = dimo.trips.trips(
+        vehicle_jwt=vehicle_jwt, 
+        token_id=<token_id>
+        )
+    return trip_data
 ```
 
 ### Querying the DIMO GraphQL API
