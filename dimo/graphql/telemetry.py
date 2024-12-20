@@ -115,7 +115,7 @@ class Telemetry:
         )
 
     # Sample query - get the VIN of a specific vehicle
-    def get_vehicle_vin(self, vehicle_jwt: str, token_id: str) -> dict:
+    def get_vehicle_vin_vc(self, vehicle_jwt: str, token_id: str) -> dict:
         query = """
         query GetVIN($tokenId: Int!) {
             vinVCLatest (tokenId: $tokenId) {
@@ -127,3 +127,27 @@ class Telemetry:
         return self.dimo.query(
             "Telemetry", query, token=vehicle_jwt, variables=variables
         )
+
+    def get_vin(self, vehicle_jwt: str, token_id: int):
+        try:
+            attestation_response = self.dimo.attestation.create_vin_vc(
+                vehicle_jwt=vehicle_jwt, token_id=token_id
+            )
+            if attestation_response["message"] == 'VC generated successfully. Retrieve using the provided GQL URL and query parameter.':
+                query = """
+                query GetLatestVinVC($tokenId: Int!) {
+                    vinVCLatest(tokenId: $tokenId) {
+                        vin
+                    }
+                }
+                """
+                variables = {"tokenId": token_id}
+
+                return self.dimo.query(
+                "Telemetry", query, token=vehicle_jwt, variables=variables
+            )
+            else: 
+                return "There was an error generating a VIN VC. Please check your credentials and try again."
+
+        except Exception as error:
+            raise Exception(f"Error getting VIN: {str(error)}")
