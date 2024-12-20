@@ -1,14 +1,9 @@
 from .api.attestation import Attestation
 from .api.auth import Auth
-from .api.device_data import DeviceData
 from .api.device_definitions import DeviceDefinitions
-from .api.devices import Devices
-from .api.events import Events
 from .api.token_exchange import TokenExchange
 from .api.trips import Trips
-from .api.user import User
 from .api.valuations import Valuations
-from .api.vehicle_signal_decoding import VehicleSignalDecoding
 
 from .graphql.identity import Identity
 from .graphql.telemetry import Telemetry
@@ -25,19 +20,12 @@ class DIMO:
         self.urls = dimo_environment[env]
         self.attestation = Attestation(self.request, self._get_auth_headers)
         self.auth = Auth(self.request, self._get_auth_headers, self.env)
-        self.device_data = DeviceData(self.request, self._get_auth_headers)
         self.device_definitions = DeviceDefinitions(
             self.request, self._get_auth_headers
         )
-        self.devices = Devices(self.request, self._get_auth_headers)
-        self.events = Events(self.request, self._get_auth_headers)
         self.token_exchange = TokenExchange(self.request, self._get_auth_headers)
         self.trips = Trips(self.request, self._get_auth_headers)
-        self.user = User(self.request, self._get_auth_headers)
         self.valuations = Valuations(self.request, self._get_auth_headers)
-        self.vehicle_signal_decoding = VehicleSignalDecoding(
-            self.request, self._get_auth_headers
-        )
         self.identity = Identity(self)
         self.telemetry = Telemetry(self)
         self._session = Request.session
