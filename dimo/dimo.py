@@ -23,10 +23,12 @@ class DIMO:
         self.device_definitions = DeviceDefinitions(
             self.request, self._get_auth_headers
         )
-        self.token_exchange = TokenExchange(self.request, self._get_auth_headers)
+        self.identity = Identity(self)
+        self.token_exchange = TokenExchange(
+            self.request, self._get_auth_headers, self.identity
+        )
         self.trips = Trips(self.request, self._get_auth_headers)
         self.valuations = Valuations(self.request, self._get_auth_headers)
-        self.identity = Identity(self)
         self.telemetry = Telemetry(self)
         self._session = Request.session
 
