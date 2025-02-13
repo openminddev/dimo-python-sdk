@@ -133,7 +133,10 @@ class Telemetry:
             attestation_response = self.dimo.attestation.create_vin_vc(
                 vehicle_jwt=vehicle_jwt, token_id=token_id
             )
-            if attestation_response["message"] == 'VC generated successfully. Retrieve using the provided GQL URL and query parameter.':
+            if (
+                attestation_response["message"]
+                == "VC generated successfully. Retrieve using the provided GQL URL and query parameter."
+            ):
                 query = """
                 query GetLatestVinVC($tokenId: Int!) {
                     vinVCLatest(tokenId: $tokenId) {
@@ -144,9 +147,9 @@ class Telemetry:
                 variables = {"tokenId": token_id}
 
                 return self.dimo.query(
-                "Telemetry", query, token=vehicle_jwt, variables=variables
-            )
-            else: 
+                    "Telemetry", query, token=vehicle_jwt, variables=variables
+                )
+            else:
                 return "There was an error generating a VIN VC. Please check your credentials and try again."
 
         except Exception as error:
