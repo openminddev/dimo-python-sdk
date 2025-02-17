@@ -126,15 +126,38 @@ For the end users of your application, they will need to share their vehicle per
 
 Typically, any endpoints that uses a NFT `tokenId` in path parameters will require JWTs. You can use this flow to obtain a privilege token.
 
+There are now two methods of invoking the token exchange to obtain a Vehicle JWT: a streamlined method and a more verbose method:
+
+##### Streamlined Method (Recommended): 
+This method uses your client_id to check the privileges for a specified token_id via a query to the Identity API. This strips away the need to provide a privileges list:
+
+```python
+# Start by obtaining a Developer JWT 
+auth_header = dimo.auth.get_token(
+    client_id = '<client_id>',
+    domain = '<domain>',
+    private_key = '<private_key>'
+)
+
+dev_jwt = auth_header["access_token"]
+
+# Then use the simplified method for getting a Vehicle JWT
+
+get_vehicle_jwt = dimo.token_exchange.exchange(
+    developer_jwt = dev_jwt
+    token_id ="<token_id>"
+)
+vehicle_jwt = get_vehicle_jwt['token']
+
+```
+##### Verbose Method: 
+This method requires you to explicity provide the list of privileges that this token_id has granted to your developer license. For more information, review the [Permissions Contract (SACD) Documentation](https://docs.dimo.org/developer-platform/developer-guide/permissions-contract-sacd).
 ```python
 
 get_vehicle_jwt = dimo.token_exchange.exchange(
     developer_jwt = dev_jwt, 
-    # The Developer JWT you received using either the three step function calls, or the .get_token() shortcut 
     privileges=[1, 3, 4, 5],
-    # The privileges you've set for this vehicle, in list format (e.g. [1, 3, 4, 5])
     token_id="<token_id>" 
-    # The Vehicle NFT Token ID that you are requesting permission to
     )
 vehicle_jwt = get_vehicle_jwt['token']
 ```
