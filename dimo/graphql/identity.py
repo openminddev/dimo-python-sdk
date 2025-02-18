@@ -204,3 +204,21 @@ class Identity:
         variables = {"owner": address, "first": limit}
 
         return self.dimo.query("Identity", query, variables=variables)
+
+    # # Sample query - check the privileges granted to your app by token_id
+    def check_vehicle_privileges(self, token_id: int) -> dict:
+        query = """
+      query CheckPrivileges($tokenId: Int!) {
+        vehicle(tokenId: $tokenId) {
+					sacds(first:100) {
+						nodes {
+							permissions
+							grantee
+						}
+					}
+				}
+      }
+      """
+        variables = {"tokenId": token_id}
+
+        return self.dimo.query("Identity", query, variables=variables)

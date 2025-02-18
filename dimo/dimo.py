@@ -18,15 +18,18 @@ class DIMO:
     def __init__(self, env="Production"):
         self.env = env
         self.urls = dimo_environment[env]
+        self._client_id = None
         self.attestation = Attestation(self.request, self._get_auth_headers)
-        self.auth = Auth(self.request, self._get_auth_headers, self.env)
+        self.auth = Auth(self.request, self._get_auth_headers, self.env, self)
         self.device_definitions = DeviceDefinitions(
             self.request, self._get_auth_headers
         )
-        self.token_exchange = TokenExchange(self.request, self._get_auth_headers)
+        self.identity = Identity(self)
+        self.token_exchange = TokenExchange(
+            self.request, self._get_auth_headers, self.identity, self
+        )
         self.trips = Trips(self.request, self._get_auth_headers)
         self.valuations = Valuations(self.request, self._get_auth_headers)
-        self.identity = Identity(self)
         self.telemetry = Telemetry(self)
         self._session = Request.session
 

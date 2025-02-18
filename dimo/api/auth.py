@@ -6,10 +6,11 @@ from typing import Dict, Optional
 
 class Auth:
 
-    def __init__(self, request_method, get_auth_headers, env):
+    def __init__(self, request_method, get_auth_headers, env, dimo_instance):
         self._request = request_method
         self._get_auth_headers = get_auth_headers
         self.env = env
+        self._dimo = dimo_instance
 
     def generate_challenge(
         self,
@@ -95,10 +96,13 @@ class Auth:
         scope="openid email",
         response_type="code",
     ) -> Dict:
+
         check_type("client_id", client_id, str)
         check_type("domain", domain, str)
         check_type("private_key", private_key, str)
         check_optional_type("address", address, str)
+
+        self._dimo._client_id = client_id
 
         if address is None:
             address = client_id
