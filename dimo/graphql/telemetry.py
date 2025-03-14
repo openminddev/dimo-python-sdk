@@ -5,6 +5,18 @@ class Telemetry:
     # Primary query method
     def query(self, query, vehicle_jwt):
         return self.dimo.query("Telemetry", query, token=vehicle_jwt)
+    
+    def available_signals(self, vehicle_jwt: str, token_id: int) -> dict:
+        query = """
+        query getAvailableSignals($tokenId: Int!) {
+            availableSignals (tokenId: $tokenId)
+        }
+        """
+        variables = {"tokenId": token_id}
+        
+        return self.dimo.query(
+            "Telemetry", query, token=vehicle_jwt, variables=variables
+        )
 
     # Sample query - get signals latest
     def get_signals_latest(self, vehicle_jwt: str, token_id: int) -> dict:
