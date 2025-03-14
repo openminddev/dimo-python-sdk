@@ -87,7 +87,7 @@ class Auth:
         )
 
     # Requires client_id, domain, and private_key. Address defaults to client_id.
-    def get_token(
+    def get_dev_jwt(
         self,
         client_id: str,
         domain: str,
