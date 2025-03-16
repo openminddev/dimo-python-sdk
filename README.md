@@ -67,7 +67,7 @@ The SDK offers 3 basic functions that maps to the steps listed in [Authenticatio
 
     signature = dimo.auth.sign_challenge(
         message = challenge['challenge'],
-        private_key = '<private_key>'
+        private_key = '<api_key>'
     )
 
     tokens = dimo.auth.submit_challenge(
@@ -83,13 +83,13 @@ The SDK offers 3 basic functions that maps to the steps listed in [Authenticatio
 As mentioned earlier, this is the streamlined function call to directly get the `developer_jwt`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
 
 ```python
-auth_header = dimo.auth.get_token(
+auth_header = dimo.auth.get_dev_jwt(
     client_id = '<client_id>',
     domain = '<domain>',
-    private_key = '<private_key>'
+    private_key = '<api_key>'
 )
 
-# Store the Developer JWT from the auth_header dictionary
+# Store the Developer JWT from the auth_header 
 dev_jwt = auth_header["access_token"]
 ```
 
@@ -133,7 +133,7 @@ This method uses your client_id to check the privileges for a specified token_id
 
 ```python
 # Start by obtaining a Developer JWT 
-auth_header = dimo.auth.get_token(
+auth_header = dimo.auth.get_dev_jwt(
     client_id = '<client_id>',
     domain = '<domain>',
     private_key = '<private_key>'
