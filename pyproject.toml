@@ -21,7 +21,7 @@ classifiers = [
 dependencies = [
     "requests>=2.30.0",
     "eth-account==0.13.4",
-    "eth-utils==4.1.1",
+    "eth-utils>=5.0.0",
 ]
 
 [project.urls]
